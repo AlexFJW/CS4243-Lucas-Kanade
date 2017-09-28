@@ -40,10 +40,10 @@ function [dx, dy] = lucasKanade(prev, curr, pixX, pixY, lenX, lenY, layers, laye
     % eigP and eigC supposed to return matrices for LK *
     figH = figure;
     subplot(1,2,1), imshow(eigP, [0 255]);
-    title('edge detection image');
+    title('previous');
     
     subplot(1,2,2), imshow(eigC, [0 255]);
-    title('hor edge detection image');
+    title('current');
 
     figName = strcat(num2str(layerNo), 'project.jpg');
     print(figH, '-djpeg', figName);
