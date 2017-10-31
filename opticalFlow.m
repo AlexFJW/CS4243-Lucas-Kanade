@@ -9,7 +9,7 @@
 % params i1: image1
 % params i2: image2
 % params windowSize: size of the LK window
-% params retentionPercentage: percentage of maxEigenvalue that minEigenvalue must be 
+% params retentionPercentage: percentage of maxEigenvalue that minEigenvalue must be
 % bigger or equal to for pixel to be kept
 % returns flowX: displacement of points in the X dimension from image1 to image2
 % returns flowY: displacement of points in the Y dimension from image1 to image2
@@ -84,9 +84,10 @@ function [flowX, flowY] = opticalFlow(i1, i2, windowSize, retentionPercentage)
   for i = 1:height
     for j = 1:width
       neighbors = minEigens(max(1, i-1):min(i+1, height), ...
-                            max(1, j-1):(min(j+1, width)));
-      eigenHere = neighbors(2,2);
-      neighbors(2,2) = 0;
+                            max(1, j-1):min(j+1, width));
+      % take min to fix edge case at corners & edges
+      eigenHere = neighbors(min(i,2), min(j,2));
+      neighbors(min(i,2), min(j,2)) = 0;
 
       neighborhoodMaxEigen = max(neighbors);
       % assume that no eigen value is equal
