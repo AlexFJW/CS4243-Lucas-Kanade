@@ -29,10 +29,15 @@ function [flowX, flowY] = sparse_lucas_kanade(i1, i2)
     layerI1 = py1[level];
     layerI2 = py2[level];
 
-    % project flowX & flowY on layerI2
-    ...
+    % project flowX & flowY on layerI2, with sublevel accuracy
+    % as suggested by reference doc, use bilinear interpolation
+    [layerHeight, layerWidth] =  size(layerI2);
+    % convenience fn to get a grid
+    [X Y] = meshgrid(1:layerWidth, 1:layerHeight);
+    projectedI2 = interp2(layerI2, X+flowX, Y+flowY);
 
-    [lFlowX lFlowY] = opticalFlow(layerI1, layerI2, windowSize, 0.05)
+    % optical flow for this layer
+    [lFlowX lFlowY] = opticalFlow(layerI1, projectedI2, windowSize, 0.05)
 
     % resize for next iteration
     if (level > 1)
