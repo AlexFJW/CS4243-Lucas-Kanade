@@ -25,16 +25,16 @@ function [flowX, flowY] = sparse_lucas_kanade(i1, i2)
     layerI1 = py1[level];
     layerI2 = py2[level];
 
-    % project flowX & flow& on layerI2
+    % project flowX & flowY on layerI2
     ...
 
     [lFlowX lFlowY] = opticalFlow(layerI1, layerI2, windowSize, 0.05)
-    flowX = 2.*(flowX+lFLowX)
-    flowY = 2.*(flowY+lFlowY)
 
     % resize for next iteration
     if (level > 1)
       nextPyramidSize = size(py1{level-1})
+      flowX = 2.*(flowX+lFLowX)
+      flowY = 2.*(flowY+lFlowY)
       flowX = imresize(flowX, nextPyramidSize, 'bilinear');
       flowY = imresize(flowY, nextPyramidSize, 'bilinear');
     end
