@@ -1,11 +1,18 @@
-%Function opticalFlow
+% Function opticalFlow
 % Calculates dense optical flow from i1 to i2
-% retention percentage determines whether we accept the flow at a point or not
-% refer to feature selection step for more info
-% retention percentage is usually 0.10 or 0.05 (and is different from tau)
+% Retention percentage determines whether we accept the flow at a point or not
+% Refer to feature selection step for more info
+% Retention percentage is usually 0.10 or 0.05 (and is different from the constant tau)
 %
-% Note for comments: 'window' is synonymous with 'aperature'
+% Note for comments: 'window' is synonymous with 'aperture'
 
+% params i1: image1
+% params i2: image2
+% params windowSize: size of the LK window
+% params retentionPercentage: percentage of maxEigenvalue that minEigenvalue must be 
+% bigger or equal to for pixel to be kept
+% returns flowX: displacement of points in the X dimension from image1 to image2
+% returns flowY: displacement of points in the Y dimension from image1 to image2
 function [flowX, flowY] = opticalFlow(i1, i2, windowSize, retentionPercentage)
   [height, width] = size(i1);
   flowX = zeros(size(i1));
@@ -25,7 +32,7 @@ function [flowX, flowY] = opticalFlow(i1, i2, windowSize, retentionPercentage)
   % ignore window region that lies outside of image
   for i = 1:height
     for j = 1:width
-      % get I_x & I_ys of image 1 in the integration window of point (i,j)
+      % get I_x & I_y of image 1 in the integration window of point (i,j)
       w_x = i1_x(max(1, i-borderLength):min(height, i+borderLength), ...
                 max(1, j-borderLength):min(width, j+borderLength));
       w_y = i1_y(max(1, i-borderLength):min(height, i+borderLength), ...
@@ -73,7 +80,7 @@ function [flowX, flowY] = opticalFlow(i1, i2, windowSize, retentionPercentage)
   end
 
   % further filter the above pixels
-  % if any non-zero pixel has a minEigen neighbor that is bigger than it eigen value, drop this pixel
+  % if any non-zero pixel has a minEigen neighbor that is bigger than its eigen value, drop this pixel
   for i = 1:height
     for j = 1:width
       neighbors = minEigens(max(1, i-1):min(i+1, height), ...
