@@ -2,7 +2,7 @@
 % Generates downscaled pyramids from the provided images
 % Each pyramid is half the size of the previous, and generated with a gaussian filter
 % Note: level 1 is the original image.
-% Layer L has the following dimensions: ceil((dim(L-1) + 1)/2)
+% Layer L has the following dimensions: ceil(dim(L-1)/2)
 
 % params i1: matrix of image1
 % params i2: matrix of image2
