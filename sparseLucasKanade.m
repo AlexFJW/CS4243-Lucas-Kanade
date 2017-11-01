@@ -1,4 +1,4 @@
-% Function sparse_lucas_kanade
+% Function sparseLucasKanade
 % This function performs the hierachial Lucas Kanade algorithm on 2 images,
 % without iterative warping
 % Reference: robots.stanford.edu/cs223b04/algo_tracking.pdf
@@ -8,7 +8,7 @@
 % params i2: image2
 % returns flowX: final displacement of points in the X dimension from image1 to image2
 % returns flowY: final displacement of points in the Y dimension from image1 to image2
-function [flowX, flowY] = sparse_lucas_kanade(i1, i2)
+function [flowX, flowY] = sparseLucasKanade(i1, i2)
   % suggested by stanford docs
   pyramidLevels = 4;
   % can be 5-15
