@@ -34,21 +34,21 @@ function [flowX, flowY] = opticalFlow(i1, i2, windowSize, retentionPercentage)
         for j = 1:width
             % get I_x & I_y of image 1 in the integration window of point (i,j)
             w_x = i1_x(max(1, i-borderLength):min(height, i+borderLength), ...
-            max(1, j-borderLength):min(width, j+borderLength));
+                        max(1, j-borderLength):min(width, j+borderLength));
             w_y = i1_y(max(1, i-borderLength):min(height, i+borderLength), ...
-            max(1, j-borderLength):min(width, j+borderLength));
+                        max(1, j-borderLength):min(width, j+borderLength));
 
             % difference between i1 & i2 for integration window
             iDiff = i1(max(1, i-borderLength):min(height, i+borderLength), ...
-            max(1, j-borderLength):min(width, j+borderLength))  ...
-            -i2(max(1, i-borderLength):min(height, i+borderLength), ...
-            max(1, j-borderLength):min(width, j+borderLength));
+                        max(1, j-borderLength):min(width, j+borderLength))  ...
+                    -i2(max(1, i-borderLength):min(height, i+borderLength), ...
+                        max(1, j-borderLength):min(width, j+borderLength));
 
             % double sum to sum all dimensions
             % G is Z in lecture notes
             b = [sum(sum(iDiff .* w_x)); sum(sum(iDiff .* w_y))];
             G = [sum(sum(w_x.^2)),sum(sum(w_x .* w_y));...
-            sum(sum(w_x .* w_y)),sum(sum(w_y.^2))];
+                sum(sum(w_x .* w_y)),sum(sum(w_y.^2))];
 
             % solve for flow
             flow = G\b;
@@ -84,7 +84,7 @@ function [flowX, flowY] = opticalFlow(i1, i2, windowSize, retentionPercentage)
     for i = 1:height
         for j = 1:width
             neighbors = minEigens(max(1, i-1):min(i+1, height), ...
-            max(1, j-1):min(j+1, width));
+                                    max(1, j-1):min(j+1, width));
             % take min to fix edge case at corners & edges
             eigenHere = neighbors(min(i,2), min(j,2));
             neighbors(min(i,2), min(j,2)) = 0;
