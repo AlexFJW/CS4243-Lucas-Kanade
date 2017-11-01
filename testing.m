@@ -1,23 +1,20 @@
-% Image test
+% image test
 Corridor1 = imread('images/bt.000.png');
 Corridor2 = imread('images/bt.001.png');
 
 I1 = double(Corridor1);
 I2 = double(Corridor2);
-[u,v] = sparseLucasKanade(I1,I2);
+[u, v] = sparseLucasKanade(I1, I2);
+% [u,v] = opticalFlow(I1,I2,15, 0.05);
 figure;
 subplot(1,2,1);
 imagesc(I1);
 colormap(gray);
 hold on;
-hold on;
 
 [height, width] = size(I1);
 [x, y] = meshgrid(1:width, 1:height);
-quiver(x, y, u, v, 'MaxHeadSize',10,'color','b','linewidth',2);
-
-title('(b) Result of sparse optical ow algorithm on the corridor image.');
-
+quiver(x, y, u, v, 50);
 
 
 % Video test
