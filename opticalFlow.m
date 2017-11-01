@@ -21,8 +21,8 @@ function [flowX, flowY] = opticalFlow(i1, i2, windowSize, retentionPercentage)
     % get I_x & I_y of all points in image 1 using the central difference operator
     dx = [-1 0 1]./2;
     dy = dx';
-    i1_x = imfilter(i1, dx, 'replicate', 'same');
-    i1_y = imfilter(i1, dy, 'replicate', 'same');
+    i1_x = conv2(i1, dx, 'same');
+    i1_y = conv2(i1, dy, 'same');
 
     minEigens = zeros(size(i1));
 
