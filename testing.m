@@ -4,10 +4,11 @@ Corridor2 = imread('images/bt.001.png');
 
 I1 = double(Corridor1);
 I2 = double(Corridor2);
-[u, v] = sparseLucasKanade(I1, I2);
+% seems like window size of 25 works better for this image
+[u, v] = sparseLucasKanade(I1, I2, 25);
 % [u,v] = opticalFlow(I1,I2,15, 0.05);
 figure;
-subplot(1,2,1);
+subplot(1,1,1);
 imagesc(I1);
 colormap(gray);
 hold on;
