@@ -24,7 +24,7 @@ function [flowX, flowY] = opticalFlow(i1, i2, windowSize, retentionPercentage)
   i1_x = imfilter(i1, dx, 'replicate', 'same');
   i1_y = imfilter(i1, dy, 'replicate', 'same');
 
-  minEigens = zeros(size(i1))
+  minEigens = zeros(size(i1));
 
   borderLength = (windowSize-1)/2;
 
@@ -56,9 +56,9 @@ function [flowX, flowY] = opticalFlow(i1, i2, windowSize, retentionPercentage)
       flowY(i,j) = flow(2);
 
       % store the min eigen values of G for feature selection
-      [U, S, V] = svd(G);
+      [~, S, ~] = svd(G);
       eigenValues = [S(1,1) S(2,2)];
-      minEigens(i-borderLength, j-borderLength) = min(eigenValues);
+      minEigens(i, j) = min(eigenValues);
     end
   end
 
@@ -68,14 +68,14 @@ function [flowX, flowY] = opticalFlow(i1, i2, windowSize, retentionPercentage)
   % central difference operator to calculate gradient
   % use a more complex selection scheme to pick good features
 
-  maxEigen = max(minEigens)
-  pixelsToKeep = false(size(i1))
+  maxEigen = max(max(minEigens));
+  pixelsToKeep = false(size(i1));
   % find pixels with minEigen larger than retentionPercentage of maxEigen & keep them
   % drop those
   for i = 1:height
     for j = 1:width
-      shouldKeep = minEigens(i, j) >= (maxEigen*retentionPercentage)
-      pixelsToKeep(i, j) = shouldKeep
+      shouldKeep = minEigens(i, j) >= (maxEigen*retentionPercentage);
+      pixelsToKeep(i, j) = shouldKeep;
     end
   end
 
@@ -89,20 +89,20 @@ function [flowX, flowY] = opticalFlow(i1, i2, windowSize, retentionPercentage)
       eigenHere = neighbors(min(i,2), min(j,2));
       neighbors(min(i,2), min(j,2)) = 0;
 
-      neighborhoodMaxEigen = max(neighbors);
+      neighborhoodMaxEigen = max(max(neighbors));
       % assume that no eigen value is equal
       shouldKeep = eigenHere > neighborhoodMaxEigen;
-      pixelsToKeep(i, j) = shouldDrop;
+      pixelsToKeep(i, j) = shouldKeep;
     end
   end
 
   % throw out bad points in the flow matrices
   for i = 1:height
     for j = 1:width
-      shouldNotKeep = !pixelsToKeep(i, j)
+      shouldNotKeep = ~pixelsToKeep(i, j);
       if (shouldNotKeep)
-        flowX(i, j) = 0
-        flowY(i, j) = 0
+        flowX(i, j) = 0;
+        flowY(i, j) = 0;
       end
     end
   end
