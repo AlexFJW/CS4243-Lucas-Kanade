@@ -35,6 +35,10 @@ function [flowX, flowY] = sparse_lucas_kanade(i1, i2)
     % convenience fn to get a grid
     [X Y] = meshgrid(1:layerWidth, 1:layerHeight);
     projectedI2 = interp2(layerI2, X+flowX, Y+flowY);
+    % interp2 gives nan if sample point is out of the points provided
+    % insert the original values there
+    nanCoordinates = isnan(projectedI2);
+    projectedI2(nanCoordinates) = layerI2(nanCoordinates);
 
     % optical flow for this layer
     [lFlowX lFlowY] = opticalFlow(layerI1, projectedI2, windowSize, 0.05)
