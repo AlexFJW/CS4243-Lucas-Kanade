@@ -28,7 +28,7 @@ function [flowX, flowY] = opticalFlow(i1, i2, windowSize, retentionPercentage)
 
     borderLength = (windowSize-1)/2;
 
-    % only calculate flow for region within border
+    % calculate flow for each point
     % ignore window region that lies outside of image
     for i = 1:height
         for j = 1:width
@@ -67,6 +67,8 @@ function [flowX, flowY] = opticalFlow(i1, i2, windowSize, retentionPercentage)
     % differences:
     % central difference operator to calculate gradient
     % use a more complex selection scheme to pick good features
+    % This is actually the shi-tomasi corner detector.
+    % http://aishack.in/tutorials/shitomasi-corner-detector/
 
     maxEigen = max(max(minEigens));
     pixelsToKeep = false(size(i1));
@@ -83,16 +85,21 @@ function [flowX, flowY] = opticalFlow(i1, i2, windowSize, retentionPercentage)
     % if any non-zero pixel has a minEigen neighbor that is bigger than its eigen value, drop this pixel
     for i = 1:height
         for j = 1:width
-            neighbors = minEigens(max(1, i-1):min(i+1, height), ...
-                                    max(1, j-1):min(j+1, width));
-            % take min to fix edge case at corners & edges
-            eigenHere = neighbors(min(i,2), min(j,2));
-            neighbors(min(i,2), min(j,2)) = 0;
+            % only filter further if current pixel is already kept
+            if (pixelsToKeep(i,j))
+                            
+                neighbors = minEigens(max(1, i-1):min(i+1, height), ...
+                                        max(1, j-1):min(j+1, width));
 
-            neighborhoodMaxEigen = max(max(neighbors));
-            % assume that no eigen value is equal
-            shouldKeep = eigenHere > neighborhoodMaxEigen;
-            pixelsToKeep(i, j) = shouldKeep;
+                % take min to fix edge case at corners & edges
+                eigenHere = neighbors(min(i,2), min(j,2));
+                neighbors(min(i,2), min(j,2)) = 0;
+
+                neighborhoodMaxEigen = max(max(neighbors));
+                % assume that no eigen value is equal
+                shouldKeep = eigenHere > neighborhoodMaxEigen;
+                pixelsToKeep(i, j) = shouldKeep;
+            end
         end
     end
 

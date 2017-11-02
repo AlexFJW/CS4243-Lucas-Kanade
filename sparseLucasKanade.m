@@ -36,7 +36,7 @@ function [flowX, flowY] = sparseLucasKanade(i1, i2, windowSize)
         projectedI2(nanCoordinates) = layerI2(nanCoordinates);
 
         % optical flow for this layer
-        [lFlowX, lFlowY] = opticalFlow(layerI1, projectedI2, windowSize, 0.05);
+        [lFlowX, lFlowY] = opticalFlow(layerI1, projectedI2, windowSize, 0.1);
         flowX = flowX + lFlowX;
         flowY = flowY + lFlowY;
 

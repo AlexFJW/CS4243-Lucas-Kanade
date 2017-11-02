@@ -4,4 +4,5 @@ MEOW MEOW MEOW CATS ARE AWESOME
 
 **notifi-CAT-ions:**
 
--To use skeleton file, add lab 5's `traffic.mp4` into project directory (file is already added into `.gitignore`)
+- Window size should be small-ish, from 5-15. (LK assumes that the entire window moves in the same direction. adjust based on predicted motion of image. Pyramidal LK already does the job of larger windows)
+- Console throws warnings as we sometimes do SVD on bad matrices. SVD needs the corner detector.
