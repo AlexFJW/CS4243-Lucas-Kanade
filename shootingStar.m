@@ -16,12 +16,8 @@ if hasFrame(video)
         currentMatrix = (cast(frameMatrix, 'double') * weightage) ...
                         + (cast(currentFrame, 'double'));
         averageMatrix = currentMatrix / counter;
-        movingObjects = abs(cast(currentFrame, 'double') - averageMatrix);
         
-        if(mod(counter, 5) == 0)
-            figure;
-            imshow(cast(movingObjects, 'uint8'));
-        end
+
         frameMatrix = averageMatrix;
         counter = counter + 1;
         weightage = weightage + 1;
@@ -29,6 +25,25 @@ if hasFrame(video)
 else
     disp('video is empty');
 end
+
+counter = 2;
+video = VideoReader('videos/Bar swing FAIL.mp4');
+if hasFrame(video)
+    while hasFrame(video)
+        currentFrame = cast(readFrame(video), 'double');
+        movingObjects = abs(cast(currentFrame, 'double') - averageMatrix);
+        
+        if(mod(counter, 20) == 0)
+            figure;
+            imshow(cast(255 - abs(currentFrame-averageMatrix), 'uint8'))
+
+        end
+        counter = counter + 1;
+    end
+else
+    disp('video is empty');
+end
+
 
 firstMovingImage = abs(cast(firstFrame, 'double') - frameMatrix);
 
