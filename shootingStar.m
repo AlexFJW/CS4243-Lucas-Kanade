@@ -1,5 +1,5 @@
-% video = VideoReader('videos/trimmed/swing_1.mp4');
-video = VideoReader('videos/trimmed/jumping_new_2.mp4');
+video = VideoReader('videos/trimmed/swing_bg.mp4');
+% video = VideoReader('videos/trimmed/jumping_bg.mp4');
 % video = VideoReader('videos/trimmed/playground.mp4');
 currAxes = axes;
 frameMatrix = zeros(video.height, video.width, 3);
@@ -26,13 +26,13 @@ else
 end
 
 counter = 2;
-threshold = 30;
-% video = VideoReader('videos/trimmed/swing_1.mp4');
-video = VideoReader('videos/trimmed/jumping_new_2.mp4');
+threshold = 55;
+video = VideoReader('videos/trimmed/swing_bg.mp4');
+% video = VideoReader('videos/trimmed/jumping_new.mp4');
 % video = VideoReader('videos/trimmed/playground.mp4');
 
-% outputVideo = VideoWriter('swing/swing_out_new_2_65.mp4', 'MPEG-4');
-outputVideo = VideoWriter('jumping/jumping_out_new_2_30.mp4', 'MPEG-4');
+outputVideo = VideoWriter('swing/swing_out_trimmed_t55_s28_e36.mp4', 'MPEG-4');
+% outputVideo = VideoWriter('jumping/jumping_out_bg_50.mp4', 'MPEG-4');
 % outputVideo = VideoWriter('playground/playground_40.mp4', 'MPEG-4');
 outputVideo.FrameRate = video.FrameRate;
 open(outputVideo)
@@ -55,8 +55,13 @@ if hasFrame(video)
         end
 
         movingObjects = currentFrame .* double(diff);
-        
-        writeVideo(outputVideo, uint8(movingObjects));
+%         figure;
+%         pic = imshow(uint8(movingObjects));
+
+        % using frame 23 to 39 for swing_bg.mp4 %
+        if (counter >= 23 && counter <= 34)
+            writeVideo(outputVideo, uint8(movingObjects));
+        end
         counter = counter + 1;
     end
 else
