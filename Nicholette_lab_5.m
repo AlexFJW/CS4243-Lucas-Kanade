@@ -1,4 +1,4 @@
-video = VideoReader('traffic.mp4');
+video = VideoReader('videos/3_40_to_3_42_jumping.mp4');
 
 disp('Length:');
 video.Duration
