@@ -6,14 +6,24 @@
 % params child: child video matrix
 % params parent: parent video matrix
 % params resizePercentage: how much to resize child by, default is 30
-function [resized] = resizeAsChild(child, parent, resizePercentage)
+function [child] = resizeAsChild(child, parent, resizePercentage)
     [~, pHeight, pWidth] = size(parent);
-    [~, cHeight, cWidth] = size(child);
+    [numFrames, cHeight, cWidth] = size(child);
 
     cHeightIsLarger = cHeight > cWidth
 
+    childToParentRatio = 0
     if (cHeightIsLarger)
-        parentToChildRatio = cHeight/pHeight;
-        percentageToResize =
+        childToParentRatio = cHeight/pHeight;
     else
+        childToParentRatio = cWidth/cHeight;
     end
+
+    # 50% , currently is 25%
+    percentageToResize = resizePercentage/childToParentRatio;
+
+    for i = 1 : numFrames
+        frame = child(i)
+        child(i) = imresize(frame, percentageToResize);
+    end
+end
