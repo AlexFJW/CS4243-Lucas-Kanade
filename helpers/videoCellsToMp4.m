@@ -11,6 +11,7 @@ function videoCellsToMp4(videoCells, frameRate, destination)
     open(outputVideo);
 
     [~, numFrames] = size(videoCells);
+
     for i = 1 : numFrames
         currentFrame = videoCells{i};
         writeVideo(outputVideo, currentFrame);
