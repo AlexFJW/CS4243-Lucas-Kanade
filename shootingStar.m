@@ -42,19 +42,12 @@ if hasFrame(video)
         currentFrame = double(readFrame(video));
         diff = abs(double(currentFrame) - averageMatrix);
         
-        [x,y,z] = size(diff);
-        
-        for i = 1:x
-            for j = 1:y
-                if (sum(diff(i,j,:)) <= threshold)
-                    diff(i,j,:) = 0;
-                else
-                    diff(i,j,:) = 1;
-                end
-            end
-        end
+        isPixel = sum(diff,3);
+        isPixel(isPixel <= threshold) = 0;
+        isPixel(isPixel > threshold) = 1;
+        isPixel = repmat(isPixel, [1 1 3]);
 
-        movingObjects = currentFrame .* double(diff);
+        movingObjects = currentFrame .* isPixel ;
 %         figure;
 %         pic = imshow(uint8(movingObjects));
 
