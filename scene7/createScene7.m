@@ -1,6 +1,7 @@
 % creates scene 7 in sceneVideos directory
 % horizontal flip human => bool,
-function [] = createScene7(humanVideoDirectory, horizontalFlipHuman, outputDirectory)
+% format for rotation degree follows rotateCells method
+function [] = createScene7(humanVideoDirectory, horizontalFlipHuman, rotationDegree, outputDirectory)
     % load bg video cells
     bgVid = VideoReader('videos/background/antman2.mp4');
     bgCells = videoToCells(bgVid);
@@ -10,12 +11,16 @@ function [] = createScene7(humanVideoDirectory, horizontalFlipHuman, outputDirec
     humanVid = VideoReader(humanVideoDirectory);
     humanCells = videoToCells(humanVid);
 
-    % extend human vid
-    humanCells = extendVideo(humanCells, totalBgFrames);
-    % flip if needed
+    % rotate human cells
+    humanCells = rotateCells(humanCells, rotationDegree, true);
+
     if (horizontalFlipHuman)
         humanCells = horizontalFlipCells(humanCells);
     end
+
+    % extend human vid
+    humanCells = extendVideo(humanCells, totalBgFrames);
+    % flip if needed
 
     % split human video into parts, by frames.
     % should have 8 parts
@@ -51,7 +56,7 @@ function [] = createScene7(humanVideoDirectory, horizontalFlipHuman, outputDirec
     % 1, enlarge by 1.2x
     % 3, enlarge by 3
 
-    % videoCellsToMp4(part3, bgVid.Framerate, 'test_output/scene7test.mp4'); % test code
+    %videoCellsToMp4(humanPart1, bgVid.Framerate, 'test_output/scene7test.mp4'); % test code
 
     % TODO: write fn for cross fade, fade in
 
