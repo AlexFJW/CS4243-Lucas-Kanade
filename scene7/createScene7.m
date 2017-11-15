@@ -15,8 +15,8 @@ function [] = createScene7(humanVideoDirectory, flipHuman, outputDirectory)
     % flip if needed
     if (flipHuman)
         humanCells = horizontalFlipCells(humanCells);
+    end
 
-    videoCellsToMp4(humanCells, humanVid.FrameRate, 'test_output/testScene7.mp4');
     % split human video into parts, by frames.
     % should have 8 parts
 
