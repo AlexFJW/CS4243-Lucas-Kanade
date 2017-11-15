@@ -1,0 +1,27 @@
+human = VideoReader('videos/filtered/swing_out_trimmed_t55_s28_e36.mp4');
+length = human.Duration;
+rate = human.FrameRate;
+frameno = ceil(rate*length);
+angle = 0;
+startingposx = 400;
+startingposy = -400;
+
+cells = videoToCells(human);
+rotatedCells = rotateCells(cells, 90, true);
+
+disp('Saving rotated vid')
+
+% save resized video to file
+videoCellsToMp4(rotatedCells, rate, 'intermediateV/rotate.mp4');
+
+for i = 1:frameno
+    humany = readFrame(human);
+    move = imtranslate(humany,[startingposx, startingposy]);
+    movingHuman = imrotate(move,angle);
+    angle = angle + 10;
+    startingposx = startingposx - 20;
+    startingposy = startingposy + 20;
+    writeVideo(writer,movingHuman);
+end
+
+
