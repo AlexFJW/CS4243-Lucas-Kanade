@@ -8,4 +8,4 @@ resizedCells = resizeImmediately(cells, 0.3);
 disp('Saving resized vid')
 
 % save resized video to file
-videoCellsToMp4(resizedCells, video.Framerate, 'test_output/resizeImmediatelyTime.mp4')
+videoCellsToMp4(resizedCells, video.Framerate, 'test_output/resizeImmediately.mp4')

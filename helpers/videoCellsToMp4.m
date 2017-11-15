@@ -5,7 +5,7 @@
 % params frameRate: framerate of destination video
 % params destination: string, destination location. include '.mp4' extension
 function videoCellsToMp4(videoCells, frameRate, destination)
-    disp('Saving vid')
+    disp('Saving vid');
     outputVideo = VideoWriter(destination, 'MPEG-4');
     outputVideo.FrameRate = frameRate;
     open(outputVideo);
