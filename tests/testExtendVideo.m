@@ -10,4 +10,4 @@ extendedCells = extendVideo(cells, 50);
 disp('Saving extended vid')
 
 % save resized video to file
-videoCellsToMp4(extendedCells, child.Framerate, 'test_output/extendTest.mp4')
+videoCellsToMp4(extendedCells, toExtend.Framerate, 'test_output/extendTest.mp4')
