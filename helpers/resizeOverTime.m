@@ -7,8 +7,8 @@ function [resizedResult] = resizeOverTime(videoCells, endSize)
     [~, numFrames] = size(videoCells);
     resizedResult = cell(numFrames);
 
-    sizeStep = (1-endSize)/numFrames;
-    currentSize = 1 - sizeStep;
+    sizeStep = (1-endSize)/(numFrames-1);
+    currentSize = 1;
     for i = 1 : numFrames
         frame = videoCells{i};
         resizedResult{i} = imresize(frame, currentSize);
