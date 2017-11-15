@@ -1,5 +1,5 @@
 % Function resizeChild
-% Resizes child video matrix to % of parent vido matrix
+% Resizes child video matrix to % of parent video matrix
 % Child's longest dimension is resized. Aspect ratio of child is maintained
 % (assumes longest dimension of subject is the longest dimension resized)
 
