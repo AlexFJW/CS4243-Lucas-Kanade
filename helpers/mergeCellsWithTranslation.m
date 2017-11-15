@@ -63,28 +63,22 @@ function [merged] = mergeCellsWithTranslation(overlay, background, startX, start
         centerX = centerX + dX;
         centerY = centerY + dY;
 
-        [Ny, Nx, Nz] = size(humany);
-        dSize = Ny*Nx;
+        % window from bg that will be replaced by overlay
+        bgWindow = bgFrame(yTop:yBottom, xLeft:xRight, : );
+
         % Get location of the black pixels in all channels (overlay's coordinates)
-        notBlackR = overlayFrame(:,:,1) ~= 0;
-        notBlackG = overlayFrame(:,:,2) ~= 0;
-        notBlackB = overlayFrame(:,:,3) ~= 0;
+        blackR = overlayFrame(:,:,1) == 0;
+        blackG = overlayFrame(:,:,2) == 0;
+        blackB = overlayFrame(:,:,3) == 0;
         % get the actual black pixels (overlay's coordinates)
-        notBlackPixels_Overlay = find(notBlackR & notBlackG & notBlackB);
+        blackPixels_Overlay = find(blackR & blackG & blackB);
 
-        notBlackPixels_Bg =
+        % fill overlay's black pixels with pixels from bg
+        overlayFrame(blackPixels) = bgWindow(blackPixels);
 
-        % paste overlay's not black pixels onto background
+        % paste overlay onto background
+        bgFrame(yTop:yBottom, xLeft:xRight, : ) = overlayFrame;
 
-        humany(blackPixels) = background(blackPixels);
-        humany(blackPixels + dSize) = background(blackPixels+dSize);
-        humany(blackPixels + 2*dSize) = background(blackPixels+dSize*2);
-
-        % override bg, may result in bugs later! be careful!
-        bgFrame()
-
-        merged{i} =
+        merged{i} = bgFrame;
     end
-
-
 end
