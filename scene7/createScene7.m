@@ -53,13 +53,16 @@ function [] = createScene7(humanVideoDirectory, horizontalFlipHuman, rotationDeg
     bgPart7 = bgCells(part6End+1:part7End);
     bgPart8 = bgCells(part7End+1:end);
 
-    % do enlarge operation on parts requiring it
+    % do fadein for 1st parts
+    humanPart1 = fadeCells(humanPart1, bgPart1, false);
+
+    % do resize operation on parts requiring it
     % 1, enlarge by 1.2x
     % 3, enlarge by 3x
     % 5, shrink by 3x
     resize1 = 1.3;
     resize3 = 3;
-    resize5 = 1/5;
+    resize5 = 1/3;
 
     sizeNow = 1;
     sizeNow = sizeNow * resize1;
@@ -81,8 +84,6 @@ function [] = createScene7(humanVideoDirectory, horizontalFlipHuman, rotationDeg
     %videoCellsToMp4(humanPart5, bgVid.Framerate, 'test_output/5.mp4'); % test code
     %videoCellsToMp4(humanPart6, bgVid.Framerate, 'test_output/6.mp4'); % test code
     %videoCellsToMp4(humanPart7, bgVid.Framerate, 'test_output/7.mp4'); % test code
-
-    % TODO: write fn for cross fade, fade in
 
     % TODO: write fn for overlayWithTranslation
 
