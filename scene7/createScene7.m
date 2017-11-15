@@ -55,9 +55,32 @@ function [] = createScene7(humanVideoDirectory, horizontalFlipHuman, rotationDeg
 
     % do enlarge operation on parts requiring it
     % 1, enlarge by 1.2x
-    % 3, enlarge by 3
+    % 3, enlarge by 3x
+    % 5, shrink by 3x
+    resize1 = 1.3;
+    resize3 = 3;
+    resize5 = 1/5;
 
-    %videoCellsToMp4(humanPart1, bgVid.Framerate, 'test_output/scene7test.mp4'); % test code
+    sizeNow = 1;
+    sizeNow = sizeNow * resize1;
+    humanPart1 = resizeOverTime(humanPart1, sizeNow);
+    humanPart2 = resizeImmediately(humanPart2, sizeNow);
+    sizeNow = sizeNow * resize3;
+    humanPart3 = resizeOverTime(humanPart3, sizeNow);
+    humanPart4 = resizeImmediately(humanPart4, sizeNow);
+    sizeNow = sizeNow * resize5;
+    humanPart5 = resizeOverTime(humanPart5, sizeNow);
+    humanPart6 = resizeImmediately(humanPart6, sizeNow);
+    humanPart7 = resizeImmediately(humanPart3, sizeNow);
+
+    % cant test like this, since some cells dont have same sized matrices
+    %videoCellsToMp4(humanPart1, bgVid.Framerate, 'test_output/1.mp4'); % test code
+    %videoCellsToMp4(humanPart2, bgVid.Framerate, 'test_output/2.mp4'); % test code
+    %videoCellsToMp4(humanPart3, bgVid.Framerate, 'test_output/3.mp4'); % test code
+    %videoCellsToMp4(humanPart4, bgVid.Framerate, 'test_output/4.mp4'); % test code
+    %videoCellsToMp4(humanPart5, bgVid.Framerate, 'test_output/5.mp4'); % test code
+    %videoCellsToMp4(humanPart6, bgVid.Framerate, 'test_output/6.mp4'); % test code
+    %videoCellsToMp4(humanPart7, bgVid.Framerate, 'test_output/7.mp4'); % test code
 
     % TODO: write fn for cross fade, fade in
 
