@@ -1,6 +1,7 @@
 % Function mergeCellsWithTranslation
 % Merges 2 video cells, while translating the overlay with given velocity
 % Note: overlay's center is the point of reference for the function's parameters
+% TODO: add some stochasticity to the translation for realism
 
 % params overlay: overlay cells (must have same size as background)
 % params background: background cells (same as above)
@@ -14,27 +15,73 @@ function [merged] = mergeCellsWithTranslation(overlay, background, startX, start
 
     if (numBgFrames ~= numOverlayFrames)
         % overlay must be of equal length to base
-        % don't want to see disappearing overlays halfway
+        % we don't want to see disappearing overlays or backgrounds halfway through
         error('overlay does not have same number of frames as background.
          may lead to overlay disappearing or background disappearing...');
     end
 
     merged = cell(1, numBgFrames);
 
+    % movement in the x direction per frame
+    dX = (destX - startX)/(numBgFrames-1);
+    % movement in the y direction per frame
+    dY = (destY - startY)/(numBgFrames-1);
+    centerX = startX;
+    centerY = startY;
     for i = 1:numOverlayFrames
         bgFrame = background{i};
         overlayFrame = overlay{i}:
+
+        [overlayHeight, overlayWidth, ~] = size(overlayFrame);
+        % position of overlay's left edge in the bg
+        xLeft = centerX - overlayWidth/2;
+        % position of overlay's right edge in the bg
+        xRight = centerX + overlayWidth/2;
+        % position of overlay's top edge in bg
+        yTop = centerY - overlayHeight/2;
+        % position of overlay's bottom edge in bg
+        yBottom = centerY + overlayHeight/2;
+
+        % nudge overlay's position a bit to land whole pixels
+        % if dX positive, ceil. else floor
+        if (dX >= 0)
+            xLeft = ceil(xLeft)
+            xRight = ceil(xRight)
+        else
+            xLeft = floor(xLeft)
+            xRight = floor(xRight)
+        end
+
+        if (dY >= 0)
+            yTop = ceil(yTop)
+            yBottom = ceil(yBottom)
+        else
+            yTop = floor(yTop)
+            yBottom = floor(yBottom)
+        end
+        % shift for next iteration
+        centerX = centerX + dX;
+        centerY = centerY + dY;
+
         [Ny, Nx, Nz] = size(humany);
-        mergedFrame = zeros(Ny, Nx, Nz);
         dSize = Ny*Nx;
-        % Get the location of the black pixels:
-        bR = humany(:,:,1) == 0;
-        bG = humany(:,:,2) == 0;
-        bB = humany(:,:,3) == 0;
-        blackPixels = find(bR & bG & bB);
+        % Get location of the black pixels in all channels (overlay's coordinates)
+        notBlackR = overlayFrame(:,:,1) ~= 0;
+        notBlackG = overlayFrame(:,:,2) ~= 0;
+        notBlackB = overlayFrame(:,:,3) ~= 0;
+        % get the actual black pixels (overlay's coordinates)
+        notBlackPixels_Overlay = find(notBlackR & notBlackG & notBlackB);
+
+        notBlackPixels_Bg =
+
+        % paste overlay's not black pixels onto background
+
         humany(blackPixels) = background(blackPixels);
         humany(blackPixels + dSize) = background(blackPixels+dSize);
         humany(blackPixels + 2*dSize) = background(blackPixels+dSize*2);
+
+        % override bg, may result in bugs later! be careful!
+        bgFrame()
 
         merged{i} =
     end

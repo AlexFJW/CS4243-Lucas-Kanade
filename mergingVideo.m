@@ -15,7 +15,7 @@ function [] = mergingVideo(humanVideoPath, bgVideoPath)
         bR = humany(:,:,1) == 0;
         bG = humany(:,:,2) == 0;
         bB = humany(:,:,3) == 0;
-        blackPixels = find(bR & bG & bB);
+        blackPixels = find(bR & bG & bB)
         humany(blackPixels) = background(blackPixels);
         humany(blackPixels + dSize) = background(blackPixels+dSize);
         humany(blackPixels + 2*dSize) = background(blackPixels+dSize*2);
