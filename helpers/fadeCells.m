@@ -5,7 +5,6 @@
 % params bgCells: background cells for cells to fade into
 % params isFadeOut: boolean, true for fade out, false for fade in
 % returns fadedCells: the faded video matrix cells
-
 function [ fadedCells ] = fadeCells( cells, bgCells, isFadeOut )
 %FADECELLS Summary of this function goes here
 %   Detailed explanation goes here
