@@ -3,12 +3,12 @@
 
 % params cells: cells with matrices to flip
 % params angle: in degrees, + for anticlockwise, - for clockwise
-% params shouldCroup: true to retain size of frame (some parts of img will be lost).
+% params shouldCrop: true to retain size of frame (some parts of img will be lost).
 %                       else, frame will be expanded to contain the rotated frames
 % returns rotatedCells: rotatedCells cells
 function [rotatedCells] = rotateCells(cells, angle, shouldCrop)
     [~, numCells] = size(cells);
-    rotatedCells = cell(numCells);
+    rotatedCells = cell(1, numCells);
 
     cropSettings = 'crop';
     if (~shouldCrop)

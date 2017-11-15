@@ -25,16 +25,17 @@ function [outputCells] = extendVideo(videoCells, desiredNumFrames)
             toInsert = reversedFrames;
         end
         % do not preallocate so code is more consize
+        %startIndex = (i-1)*originalNumFrames + 1;
+        %endIndex = i*originalNumFrames;
         outputCells = [outputCells toInsert];
         currentOrderIsNormal = ~currentOrderIsNormal;
     end
-
 
     % adding remainder frames here
     toInsert = videoCells;
     if (~currentOrderIsNormal)
         toInsert = reversedFrames;
     end
-    remainderFrames = toInsert(1,1:remainderSize);
+    remainderFrames = toInsert(1:remainderSize);
     outputCells = [outputCells remainderFrames];
 end

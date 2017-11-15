@@ -2,3 +2,4 @@ filtered_unused/
 videos/originals/
 videos/trimmed/
 test_output/*
+.idea
