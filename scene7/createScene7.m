@@ -20,6 +20,7 @@ function [] = createScene7(humanVideoDirectory, horizontalFlipHuman, rotationDeg
 
     % extend human vid
     humanCells = extendVideo(humanCells, totalBgFrames);
+    videoCellsToMp4(humanCells, bgVid.Framerate, 'test_output/scene7test.mp4'); % test code
     % flip if needed
 
     % split human video into parts, by frames.

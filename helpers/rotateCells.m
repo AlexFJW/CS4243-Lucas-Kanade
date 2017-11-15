@@ -8,7 +8,7 @@
 % returns rotatedCells: rotatedCells cells
 function [rotatedCells] = rotateCells(cells, angle, shouldCrop)
     [~, numCells] = size(cells);
-    rotatedCells = cell(numCells);
+    rotatedCells = cell(1, numCells);
 
     cropSettings = 'crop';
     if (~shouldCrop)
