@@ -10,7 +10,9 @@
 % params startY: y coordinate of overlay's start position (see above)
 % params destX: x coordinate of overlay's end position (see above)
 % params destY: y coordinate of overlay's end position (see above)
-function [merged, destX, destY] = mergeCellsWithTranslation(overlay, background, startX, startY, destX, destY)
+function [merged, destX, destY] = mergeCellsWithTranslation(overlay, background,...
+                            startX, startY, destX, destY, useGaussian)
+
     [~, numOverlayFrames] = size(overlay);
     [~, numBgFrames] = size(background);
 
@@ -81,9 +83,9 @@ function [merged, destX, destY] = mergeCellsWithTranslation(overlay, background,
         overlayFrame = overlayFrame(topBound:bottomBound, leftBound:rightBound, 1:3);
 
         % Get location of the black pixels in all channels (overlay's coordinates)
-        blackR = overlayFrame(:,:,1) == 0;
-        blackG = overlayFrame(:,:,2) == 0;
-        blackB = overlayFrame(:,:,3) == 0;
+        blackR = overlayFrame(:,:,1) <= 5;
+        blackG = overlayFrame(:,:,2) <= 5;
+        blackB = overlayFrame(:,:,3) <= 5;
         % get the actual black pixels in one channel
         blackPixels_Overlay = find(blackR & blackG & blackB);
         blackAll_1ch = ones(size(blackR));
@@ -94,8 +96,6 @@ function [merged, destX, destY] = mergeCellsWithTranslation(overlay, background,
         % fill overlay's black pixels with pixels from bg
         overlayFrame(pixelsToGrab) = bgWindow(pixelsToGrab);
 
-        % for debugging
-        useGaussian = true;
         if (useGaussian)
             % grab pixels we didn't replace, to apply gaussian blur
             % do this in 2d since blackAll_3ch is 3 layers of the same thing
@@ -104,12 +104,12 @@ function [merged, destX, destY] = mergeCellsWithTranslation(overlay, background,
             % https://www.mathworks.com/matlabcentral/answers/34735-how-to-count-black-pixels-in-a-region-of-an-image-that-can-only-have-1-white-neighbor-pixel
             sumFilter = ones(3,3); sumFilter(2,2) = 0;
             surroundingAndNonBlack_matrix = conv2(blackAll_1ch, sumFilter, 'same');
-            [I_surrounding, J_surrounding] = find(surroundingAndNonBlack_matrix <= 5 ...
+            [I_surrounding, J_surrounding] = find(surroundingAndNonBlack_matrix <= 7 ...
                                                     & surroundingAndNonBlack_matrix > 0);
             [numSurrounding, ~] = size(I_surrounding);
 
             % for each surrounding value, apply a gaussian filter.
-            borderSize = 3;
+            borderSize = 10;
             overlayFrameCopy = padarray(overlayFrame,[borderSize borderSize], 'replicate', 'both');
 
             for j = 1:numSurrounding
@@ -123,7 +123,7 @@ function [merged, destX, destY] = mergeCellsWithTranslation(overlay, background,
                                     j_coordinate : j_coordinate+2*borderSize, ...
                                     :);
                 % try 0.5 first
-                gaussianedBlock = imgaussfilt(gaussianWindow, 7);
+                gaussianedBlock = imgaussfilt(gaussianWindow, 10);
 
                 % grab the center pixel (1x1x3)
                 gaussianedPixel = gaussianedBlock(borderSize+1, borderSize+1, :);
