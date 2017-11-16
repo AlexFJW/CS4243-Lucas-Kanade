@@ -84,11 +84,15 @@ function [merged] = mergeCellsWithTranslation(overlay, background, startX, start
         blackR = overlayFrame(:,:,1) == 0;
         blackG = overlayFrame(:,:,2) == 0;
         blackB = overlayFrame(:,:,3) == 0;
-        % get the actual black pixels (overlay's coordinates)
+        % get the actual black pixels in one channel
         blackPixels_Overlay = find(blackR & blackG & blackB);
+        blackAll_1ch = zeros(size(blackR));
+        blackAll_1ch(blackPixels_Overlay) = 1; % flag 1 as pixels that are black
+        blackAll_3ch = repmat(blackAll_1ch, [1,1,3]);
+        pixelsToGrab = find(blackAll_3ch == 1);
 
         % fill overlay's black pixels with pixels from bg
-        overlayFrame(blackPixels_Overlay) = bgWindow(blackPixels_Overlay);
+        overlayFrame(pixelsToGrab) = bgWindow(pixelsToGrab);
 
         % paste overlay onto background (the same window we got above)
         bgFrame(max(1, yTop):min(bgHeight, yBottom), ...
