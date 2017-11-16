@@ -74,9 +74,14 @@ function [] = createScene7(humanVideoDirectory, childToParentRatio, ...
     sizeNow = sizeNow * resize1;
     humanPart1 = resizeOverTime(humanPart1, sizeNow);
     humanPart2 = resizeImmediately(humanPart2, sizeNow);
+
+    % always resizeImmediately to previous part's size before doing resizeOverTime
+    humanPart3 = resizeImmediately(humanPart3, sizeNow);
     sizeNow = sizeNow * resize3;
     humanPart3 = resizeOverTime(humanPart3, sizeNow);
     humanPart4 = resizeImmediately(humanPart4, sizeNow);
+
+    humanPart5 = resizeImmediately(humanPart5, sizeNow);
     sizeNow = sizeNow * resize5;
     humanPart5 = resizeOverTime(humanPart5, sizeNow);
     humanPart6 = resizeImmediately(humanPart6, sizeNow);
@@ -141,5 +146,5 @@ function [] = createScene7(humanVideoDirectory, childToParentRatio, ...
     mergedAll = [merged1 merged2 merged3 merged4 merged5 merged6 merged7 merged8];
 
     videoCellsToMp4(mergedAll, bgVid.Framerate, 'test_output/all.mp4'); % test code
-    videoCellsToMp4(mergedAll, bgVid.Framerate, outputDirectory); % test code
+    % videoCellsToMp4(mergedAll, bgVid.Framerate, outputDirectory); % test code
 end
