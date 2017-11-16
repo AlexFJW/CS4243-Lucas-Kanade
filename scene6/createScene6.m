@@ -14,10 +14,6 @@ function [] = createScene6(humanVideoDirectory, childToParentRatio, ...
     humanVid = VideoReader(humanVideoDirectory);
     humanCells = videoToCells(humanVid);
 
-    % only take first 1/4 of video
-    [~, initialHumanFrames] = size(humanCells);
-    humanCells = humanCells(1:floor(initialHumanFrames/4));
-
     % resize human cells to fraction of bg
     humanCells = resizeChild(humanCells, bgHeight, bgWidth, childToParentRatio);
 
@@ -36,8 +32,8 @@ function [] = createScene6(humanVideoDirectory, childToParentRatio, ...
     % should have 3 parts
     totalQuicktimeFrames = 48;
 
-    part1End = ceil(30/totalQuicktimeFrames * totalBgFrames);
-    part2End = ceil(32/totalQuicktimeFrames * totalBgFrames);
+    part1End = ceil(15/totalQuicktimeFrames * totalBgFrames);
+    part2End = ceil(25/totalQuicktimeFrames * totalBgFrames);
 
     humanPart1 = humanCells(1:part1End);
     humanPart2 = humanCells(part1End+1:part2End);
@@ -47,8 +43,12 @@ function [] = createScene6(humanVideoDirectory, childToParentRatio, ...
     bgPart2 = bgCells(part1End+1:part2End);
     bgPart3 = bgCells(part2End+1:end);
 
-    humanPart1 = rotateOverTime(humanPart1, -75);
-    videoCellsToMp4(humanPart1, bgVid.Framerate, 'test_output/rotate_test.mp4'); % test code
+    % do rotation operation on parts requring it
+    % 1, rotate by -75
+    rotationNow = -75;
+    humanPart1 = rotateOverTime(humanPart1, rotationNow);
+    humanPart2 = rotateCells(humanPart2, rotationNow, false);
+    humanPart3 = rotateCells(humanPart3, rotationNow, false);
 
     % do resize operation on parts requiring it
     % 1, enlarge by 2.3x
@@ -63,6 +63,10 @@ function [] = createScene6(humanVideoDirectory, childToParentRatio, ...
     sizeNow = sizeNow * resize3;
     humanPart3 = resizeOverTime(humanPart3, sizeNow);
 
+    disp(2)
+    size(humanPart3)
+    size(bgPart3)
+
     % move south-west
     lastX = 400; lastY = 300;
     nextX = 340; nextY = 336;
@@ -72,6 +76,11 @@ function [] = createScene6(humanVideoDirectory, childToParentRatio, ...
     nextX = lastX;
     nextY = lastY;
     [merged2, lastX, lastY] = mergeCellsWithTranslation(humanPart2, bgPart2, lastX, lastY, nextX, nextY);
+
+    disp(3)
+    size(humanPart3)
+    size(bgPart3)
+
 
     % a little right
     nextX = 381;
