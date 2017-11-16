@@ -131,6 +131,15 @@ function [merged, destX, destY] = mergeCellsWithTranslation(overlay, background,
             end
         end
 
+        % add image movement effect
+        distanceTravelled = max(sqrt(dX.^2+dY.^2), 0.001);
+        angleOfMovement = -(90 - atan(-dY/dX) * 180 / pi);
+        if (isnan(angleOfMovement))
+            angleOfMovement = rand * 360 - 180;
+        end
+        motionFilter = fspecial('motion', distanceTravelled, angleOfMovement);
+        overlayFrame = imfilter(overlayFrame, motionFilter, 'replicate');
+
         % paste overlay onto background (the same window we got above)
         bgFrame(max(1, yTop):min(bgHeight, yBottom), ...
                 max(1, xLeft):min(bgWidth, xRight), 1:3) = overlayFrame;
