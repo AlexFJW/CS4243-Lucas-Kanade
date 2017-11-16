@@ -52,26 +52,23 @@ function [] = createScene6(humanVideoDirectory, childToParentRatio, ...
 
 
     % do resize operation on parts requiring it
-    % 1, enlarge by 2.3x
-    % 3, shrink by 2.3x
-    resize1 = 2.3;
-    resize3 = 1/2.3;
+    % 1, enlarge by ~2x
+    % 3, shrink by ~3x
+    resize1 = 3;
+    resize3 = 1/3.5;
 
     sizeNow = 1;
     sizeNow = sizeNow * resize1;
     humanPart1 = resizeOverTime(humanPart1, sizeNow);
     humanPart2 = resizeImmediately(humanPart2, sizeNow);
+
+    humanPart3 = resizeImmediately(humanPart3, sizeNow);
     sizeNow = sizeNow * resize3;
-    disp(2)
-    size(humanPart3)
     humanPart3 = resizeOverTime(humanPart3, sizeNow);
 
-    disp(3)
-    size(humanPart3)
-
     % move south-west
-    lastX = 400; lastY = 300;
-    nextX = 340; nextY = 336;
+    lastX = 550; lastY = 410;
+    nextX = 430; nextY = 300;
     [merged1, lastX, lastY] = mergeCellsWithTranslation(humanPart1, bgPart1, lastX, lastY, nextX, nextY);
 
     % stationary
@@ -79,16 +76,14 @@ function [] = createScene6(humanVideoDirectory, childToParentRatio, ...
     nextY = lastY;
     [merged2, lastX, lastY] = mergeCellsWithTranslation(humanPart2, bgPart2, lastX, lastY, nextX, nextY);
 
-
-
-    % a little right
-    nextX = 381;
-    nextY = 330;
+    % move right a lot
+    nextX = lastX + 72;
+    nextY = lastY;
     [merged3, lastX, lastY] = mergeCellsWithTranslation(humanPart3, bgPart3, lastX, lastY, nextX, nextY);
 
-    %videoCellsToMp4(merged1, bgVid.Framerate, 'test_output/1.mp4'); % test code
-    %videoCellsToMp4(merged2, bgVid.Framerate, 'test_output/2.mp4'); % test code
-    %videoCellsToMp4(merged3, bgVid.Framerate, 'test_output/3.mp4'); % test code
+    % videoCellsToMp4(merged1, bgVid.Framerate, 'test_output/1.mp4'); % test code
+    % videoCellsToMp4(merged2, bgVid.Framerate, 'test_output/2.mp4'); % test code
+    % videoCellsToMp4(merged3, bgVid.Framerate, 'test_output/3.mp4'); % test code
 
     % append all merged together
     mergedAll = [merged1 merged2 merged3];
