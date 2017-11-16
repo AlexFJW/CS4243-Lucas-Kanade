@@ -109,7 +109,9 @@ function [merged, destX, destY] = mergeCellsWithTranslation(overlay, background,
             [numSurrounding, ~] = size(I_surrounding);
 
             % for each surrounding value, apply a gaussian filter.
-            overlayFrameCopy = overlayFrame;
+            borderSize = 3;
+            overlayFrameCopy = padarray(overlayFrame,[borderSize borderSize], 'replicate', 'both');
+
             for j = 1:numSurrounding
                 i_coordinate = I_surrounding(j);
                 j_coordinate = J_surrounding(j);
@@ -117,16 +119,14 @@ function [merged, destX, destY] = mergeCellsWithTranslation(overlay, background,
                 % apply gaussian filter on the window, with 'same'
                 % get the center value (1x1x3) & replace the one in overlayFrame (1x1x3)
                 gaussianWindow = overlayFrameCopy(...
-                                    max(1,i_coordinate-1) : min(overlayHeight, i_coordinate+1), ...
-                                    max(1,j_coordinate-1) : min(overlayWidth, j_coordinate+1), ...
+                                    i_coordinate : i_coordinate+2*borderSize, ...
+                                    j_coordinate : j_coordinate+2*borderSize, ...
                                     :);
                 % try 0.5 first
-                gaussianedBlock = imgaussfilt(gaussianWindow, 0.5);
+                gaussianedBlock = imgaussfilt(gaussianWindow, 7);
 
                 % grab the center pixel (1x1x3)
-                gaussianedPixel = gaussianedBlock(min(i_coordinate, 2),...
-                                                 min(j_coordinate, 2),...
-                                                 :);
+                gaussianedPixel = gaussianedBlock(borderSize+1, borderSize+1, :);
                 overlayFrame(i_coordinate, j_coordinate, :) = gaussianedPixel;
             end
         end
