@@ -36,8 +36,8 @@ function [] = createScene6(humanVideoDirectory, childToParentRatio, ...
     % should have 3 parts
     totalQuicktimeFrames = 48;
 
-    part1End = ceil(9/totalQuicktimeFrames * totalBgFrames);
-    part2End = ceil(16/totalQuicktimeFrames * totalBgFrames);
+    part1End = ceil(30/totalQuicktimeFrames * totalBgFrames);
+    part2End = ceil(32/totalQuicktimeFrames * totalBgFrames);
 
     humanPart1 = humanCells(1:part1End);
     humanPart2 = humanCells(part1End+1:part2End);
@@ -47,7 +47,8 @@ function [] = createScene6(humanVideoDirectory, childToParentRatio, ...
     bgPart2 = bgCells(part1End+1:part2End);
     bgPart3 = bgCells(part2End+1:end);
 
-    % TODO: do rotate operation on parts requiring it
+    humanPart1 = rotateOverTime(humanPart1, -75);
+    videoCellsToMp4(humanPart1, bgVid.Framerate, 'test_output/rotate_test.mp4'); % test code
 
     % do resize operation on parts requiring it
     % 1, enlarge by 2.3x
