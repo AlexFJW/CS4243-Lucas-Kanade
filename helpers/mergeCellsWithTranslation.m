@@ -69,26 +69,23 @@ function [merged] = mergeCellsWithTranslation(overlay, background, startX, start
 
         % window from bg that will be replaced by overlay
         % top, bottom, left, right may be outside of frame, drop those parts
-        max(0, yTop)
-        min(bgHeight, yBottom)
-        max(0, xLeft)
-        min(bgWidth, xRight)
-
-        bgWindow = bgFrame(max(0, yTop):min(bgHeight, yBottom), ...
-                           max(0, xLeft):min(bgWidth, xRight), ...
-                           1:3);
+        bgWindow = bgFrame(max(1, yTop):min(bgHeight, yBottom), ...
+                           max(1, xLeft):min(bgWidth, xRight), 1:3);
 
         [windowHeight, windowWidth, ~] = size(bgWindow);
 
         % trim parts of overlay frame that are out of window
         % warning... floor may be the wrong choice
-        halfOverlayWidth = floor(overlayWidth/2);
-        halfOverlayHeight = floor(overlayHeight/2);
-        leftBound = floor(max(0, halfOverlayWidth - centerX));
-        rightBound = min(overlayWidth, leftBound + windowWidth);
-        topBound = floor(max(0, halfOverlayHeight - centerY));
+        halfOverlayWidth = overlayWidth/2;
+        halfOverlayHeight = overlayHeight/2;
+        leftBound = floor(max(1, halfOverlayWidth - centerX));
+        rightBound = min(overlayWidth, leftBound + windowWidth + 1);
+        topBound = floor(max(1, halfOverlayHeight - centerY));
         bottomBound = min(overlayHeight, topBound + windowHeight);
         overlayFrame = overlayFrame(topBound:bottomBound, leftBound:rightBound, 1:3);
+
+        size(overlayFrame)
+        size(bgWindow)
 
         % Get location of the black pixels in all channels (overlay's coordinates)
         blackR = overlayFrame(:,:,1) == 0;
@@ -100,8 +97,9 @@ function [merged] = mergeCellsWithTranslation(overlay, background, startX, start
         % fill overlay's black pixels with pixels from bg
         overlayFrame(blackPixels_Overlay) = bgWindow(blackPixels_Overlay);
 
-        % paste overlay onto background
-        bgFrame(yTop:yBottom, xLeft:xRight, 1:3) = overlayFrame;
+        % paste overlay onto background (the same window we got above)
+        bgFrame(max(1, yTop):min(bgHeight, yBottom), ...
+                max(1, xLeft):min(bgWidth, xRight), 1:3) = overlayFrame;
 
         merged{i} = bgFrame;
     end
