@@ -16,7 +16,15 @@ if hasFrame(video)
         currentFrame = readFrame(video);
         currentMatrix = (double(frameMatrix) * weightage) + double(currentFrame);
         averageMatrix = currentMatrix / counter;
-        
+s
+        movingObjects = abs(cast(currentFrame, 'double') - averageMatrix);
+        %movingObjects = cast(currentFrame, 'double') - averageMatrix;
+
+        %if(mod(counter, 5) == 0)
+        %    figure;
+        %    imshow(cast(movingObjects, 'uint8'));
+        %end
+
         frameMatrix = averageMatrix;
         counter = counter + 1;
         weightage = weightage + 1;
