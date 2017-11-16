@@ -4,7 +4,7 @@
 % format for child to parent: %
 function [] = createScene3(humanVideoDirectory, childToParentRatio, ...
                         horizontalFlipHuman, rotationDegree, ...
-                        startFrame, endFrame, outputDirectory)
+                        startFrame, endFrame, outputDirectory, useGaussian)
     % load bg video cells
     bgVid = VideoReader('videos/background/supernova1.mp4');
     bgCells = videoToCells(bgVid);
@@ -14,7 +14,7 @@ function [] = createScene3(humanVideoDirectory, childToParentRatio, ...
     % convert human video to cells
     humanVid = VideoReader(humanVideoDirectory);
     humanCells = videoToCells(humanVid);
-    
+
     % Select range of cells
     humanCells = humanCells(1,startFrame:endFrame);
 
@@ -39,13 +39,13 @@ function [] = createScene3(humanVideoDirectory, childToParentRatio, ...
     rhsStartY = height;
     lhsStartX = 0;
     lhsStartY = height;
-    
+
     middleX = floor(width/2);
     middleY = floor(height/2);
     xBuffer = 160;
     yBuffer = 120;
-    [merged1, lastX, lastY] = mergeCellsWithTranslation(humanCells1, bgCells, lhsStartX, lhsStartY, middleX-xBuffer, middleY+yBuffer);
-    [merged2, lastX, lastY] = mergeCellsWithTranslation(humanCells2, merged1, rhsStartX, rhsStartY, middleX+xBuffer, middleY+yBuffer);
+    [merged1, lastX, lastY] = mergeCellsWithTranslation(humanCells1, bgCells, lhsStartX, lhsStartY, middleX-xBuffer, middleY+yBuffer, useGaussian);
+    [merged2, lastX, lastY] = mergeCellsWithTranslation(humanCells2, merged1, rhsStartX, rhsStartY, middleX+xBuffer, middleY+yBuffer, useGaussian);
 
     videoCellsToMp4(merged2, bgVid.Framerate, outputDirectory); % test code
 end
