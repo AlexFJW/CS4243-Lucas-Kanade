@@ -65,13 +65,6 @@ function [merged] = mergeCellsWithTranslation(overlay, background, startX, start
         % window from bg that will be replaced by overlay
         % top, bottom, left, right may be outside of frame, drop those parts
 
-        disp('calculated dims')
-        max(1, yTop)
-        min(bgHeight, yBottom)
-        max(1, xLeft)
-        min(bgWidth, xRight)
-        disp('frame size')
-        size(bgFrame)
         bgWindow = bgFrame(max(1, yTop):min(bgHeight, yBottom), ...
                            max(1, xLeft):min(bgWidth, xRight), 1:3);
 

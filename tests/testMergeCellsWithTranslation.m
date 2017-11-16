@@ -3,7 +3,8 @@ video = VideoReader('videos/filtered/human1_3_out_100.mp4');
 humanCells = videoToCells(video);
 
 % insert bg cells
-bg = VideoReader('videos/background/antman2.mp4');
+bg = VideoReader('videos/trimmed/shooting_stars_galaxy.mp4');
+
 bgCells = videoToCells(bg);
 % rescale to human to 30% of bg
 [bgHeight, bgWidth, ~] = size(bgCells{1});
