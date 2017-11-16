@@ -37,38 +37,41 @@ function [merged] = mergeCellsWithTranslation(overlay, background, startX, start
         overlayFrame = overlay{i};
         [bgHeight, bgWidth, ~] = size(bgFrame);
         [overlayHeight, overlayWidth, ~] = size(overlayFrame);
+
         % position of overlay's left edge in the bg
         xLeft = centerX - overlayWidth/2;
-        % position of overlay's right edge in the bg
-        xRight = centerX + overlayWidth/2;
         % position of overlay's top edge in bg
         yTop = centerY - overlayHeight/2;
-        % position of overlay's bottom edge in bg
-        yBottom = centerY + overlayHeight/2;
 
         % nudge overlay's position a bit to land whole pixels
         % if dX positive, ceil. else floor
         if (dX >= 0)
             xLeft = ceil(xLeft);
-            xRight = ceil(xRight);
         else
             xLeft = floor(xLeft);
-            xRight = floor(xRight);
         end
 
         if (dY >= 0)
             yTop = ceil(yTop);
-            yBottom = ceil(yBottom);
         else
             yTop = floor(yTop);
-            yBottom = floor(yBottom);
         end
-        % shift for next iteration
-        centerX = centerX + dX;
-        centerY = centerY + dY;
+
+        % position of overlay's right edge in the bg
+        xRight = xLeft + overlayWidth - 1;
+        % position of overlay's bottom edge in bg
+        yBottom = yTop + overlayHeight - 1;
 
         % window from bg that will be replaced by overlay
         % top, bottom, left, right may be outside of frame, drop those parts
+
+        disp('calculated dims')
+        max(1, yTop)
+        min(bgHeight, yBottom)
+        max(1, xLeft)
+        min(bgWidth, xRight)
+        disp('frame size')
+        size(bgFrame)
         bgWindow = bgFrame(max(1, yTop):min(bgHeight, yBottom), ...
                            max(1, xLeft):min(bgWidth, xRight), 1:3);
 
@@ -79,13 +82,10 @@ function [merged] = mergeCellsWithTranslation(overlay, background, startX, start
         halfOverlayWidth = overlayWidth/2;
         halfOverlayHeight = overlayHeight/2;
         leftBound = floor(max(1, halfOverlayWidth - centerX));
-        rightBound = min(overlayWidth, leftBound + windowWidth + 1);
+        rightBound = min(overlayWidth, leftBound + windowWidth - 1);
         topBound = floor(max(1, halfOverlayHeight - centerY));
-        bottomBound = min(overlayHeight, topBound + windowHeight);
+        bottomBound = min(overlayHeight, topBound + windowHeight - 1);
         overlayFrame = overlayFrame(topBound:bottomBound, leftBound:rightBound, 1:3);
-
-        size(overlayFrame)
-        size(bgWindow)
 
         % Get location of the black pixels in all channels (overlay's coordinates)
         blackR = overlayFrame(:,:,1) == 0;
@@ -102,5 +102,10 @@ function [merged] = mergeCellsWithTranslation(overlay, background, startX, start
                 max(1, xLeft):min(bgWidth, xRight), 1:3) = overlayFrame;
 
         merged{i} = bgFrame;
+
+        % shift for next iteration
+        centerX = centerX + dX;
+        centerY = centerY + dY;
+
     end
 end
