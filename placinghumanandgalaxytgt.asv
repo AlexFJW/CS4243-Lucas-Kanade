@@ -1,27 +1,73 @@
-human = VideoReader('videos/filtered/swing_out_trimmed_t55_s28_e36.mp4');
-length = human.Duration;
-rate = human.FrameRate;
-frameno = ceil(rate*length);
-angle = 0;
-startingposx = 400;
-startingposy = -400;
+humanVid = VideoReader('videos/filtered/human1_3_out_100.mp4');
+humanCells = videoToCells(humanVid);
 
-cells = videoToCells(human);
-rotatedCells = rotateCells(cells, 90, true);
+bgVid = VideoReader('videos/background/galaxy.mp4');
+bgCells = videoToCells(bgVid);
+[~, totalBgFrames] = size(bgCells);
+[bgHeight, bgWidth, ~] = size(bgCells{1});
 
-disp('Saving rotated vid')
+% only take first 1/4 of video
+[~, initialHumanFrames] = size(humanCells);
+humanCells = humanCells(1:floor(initialHumanFrames/4));
 
-% save resized video to file
-videoCellsToMp4(rotatedCells, rate, 'intermediateV/rotate.mp4');
+% resize human cells to fraction of bg
+humanCells = resizeChild(humanCells, bgHeight, bgWidth, 0.45);
 
-for i = 1:frameno
-    humany = readFrame(human);
-    move = imtranslate(humany,[startingposx, startingposy]);
-    movingHuman = imrotate(move,angle);
-    angle = angle + 10;
-    startingposx = startingposx - 20;
-    startingposy = startingposy + 20;
-    writeVideo(writer,movingHuman);
-end
+% rotate human cells
+humanCells = rotateCells(humanCells, -90, true);
+
+%extendVideo
+humanCells = extendVideo(humanCells, totalBgFrames*2);
+
+%splitting of frames human
+frame1 = humanCells(1:36);
+frame2 = humanCells(36+1:36+36);
+frame3 = humanCells(36+36+1:36+36+36);
+frame4 = humanCells(36+36+36+1:36+36+36+36);
+frame5 = humanCells(36+36+36+36+1:178);
+
+%splitting of background frames
+bgframe1 = bgCells(1:36);
+bgframe2 = bgCells(36+1:36+36);
+bgframe3 = bgCells(36+36+1:36+36+36);
+bgframe4 = bgCells(36+36+36+1:36+36+36+36);
+bgframe5 = bgCells(36+36+36+36+1:178);
+
+%frame1
+frame1 = resizeImmediately(frame1, 4);
+humanPart1 = resizeOverTime(frame1, 0);
+
+lastX = -50; lastY = -50;
+nextX = 600; nextY = 400;
+[merged1, lastX, lastY] = mergeCellsWithTranslation(humanPart1, bgframe1, lastX, lastY, nextX, nextY);
+
+%frame2
+frame2 = horizontalFlipCells(frame2);
+frame2 = resizeImmediately(frame2, 4);
+humanPart2 = resizeOverTime(frame2, 0);
+
+lastX = 1280; lastY = -50;
+nextX = 600; nextY = 400;
+[merged2, lastX, lastY] = mergeCellsWithTranslation(humanPart2, bgframe2, lastX, lastY, nextX, nextY);
+
+%frame3
+frame3 = resizeImmediately(frame3, 4);
+humanPart3 = resizeOverTime(frame3, 0);
+
+lastX = -50; lastY = 720;
+nextX = 600; nextY = 400;
+[merged3, lastX, lastY] = mergeCellsWithTranslation(humanPart3, bgframe3, lastX, lastY, nextX, nextY);
+
+%frame4
+frame4 = horizontalFlipCells(frame4);
+frame4 = resizeImmediately(frame4, 4);
+humanPart4 = resizeOverTime(frame4, 0);
+
+lastX = 1280; lastY = -50;
+nextX = 600; nextY = 400;
+[merged2, lastX, lastY] = mergeCellsWithTranslation(humanPart2, bgframe2, lastX, lastY, nextX, nextY);
+
+videoCellsToMp4(merged3, bgVid.Framerate, 'test_output/test3.mp4'); % test code
+
 
 

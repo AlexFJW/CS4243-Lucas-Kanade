@@ -1,23 +1,37 @@
-human = VideoReader('videos/filtered/swing_out_trimmed_t55_s28_e36.mp4');
-length = human.Duration;
-rate = human.FrameRate;
-frameno = ceil(rate*length);
-startingposx = 500;
-startingposy = -400;
+humanVid = VideoReader('videos/filtered/human1_3_out_100.mp4');
+humanCells = videoToCells(humanVid);
 
-writer = VideoWriter('swingermove');
-writer.FrameRate = hrate;
-open(writer);
+bgVid = VideoReader('videos/background/galaxy.mp4');
+bgCells = videoToCells(bgVid);
+[~, totalBgFrames] = size(bgCells);
+[bgHeight, bgWidth, ~] = size(bgCells{1});
 
-for i = 1:frameno
-    humany = readFrame(human);
-    move = imtranslate(humany,[startingposx, startingposy]);
-    startingposx = startingposx - 20;
-    startingposy = startingposy + 20;
-    writeVideo(writer,move);
-end
+% only take first 1/4 of video
+[~, initialHumanFrames] = size(humanCells);
+humanCells = humanCells(1:floor(initialHumanFrames/4));
 
-close(writer);
+% resize human cells to fraction of bg
+humanCells = resizeChild(humanCells, bgHeight, bgWidth, 0.45);
 
-mergingVideo('swingermove.avi','videos/background/galaxy.mp4');
+% rotate human cells
+humanCells = rotateCells(humanCells, -90, true);
+
+%extendVideo
+humanCells = extendVideo(humanCells, totalBgFrames);
+
+%frame1
+humanPart1 = humanCells(1:89);
+bgPart1 = bgCells(1:89);
+
+humanPart1 = resizeImmediately(humanPart1, 3);
+humanPart1 = rotateOverTime(humanPart1);
+humanPart1= resizeOverTime(humanPart1, 0.1);
+
+lastX = -50; lastY = -50;
+nextX = 600; nextY = 400;
+[merged1, lastX, lastY] = mergeCellsWithTranslation(humanPart1, bgPart1, lastX, lastY, nextX, nextY);
+
+videoCellsToMp4(merged1, bgVid.Framerate, 'jorelvideo/humangalaxy.mp4'); % test code
+
+
 
