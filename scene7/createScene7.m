@@ -141,4 +141,5 @@ function [] = createScene7(humanVideoDirectory, childToParentRatio, ...
     mergedAll = [merged1 merged2 merged3 merged4 merged5 merged6 merged7 merged8];
 
     videoCellsToMp4(mergedAll, bgVid.Framerate, 'test_output/all.mp4'); % test code
+    videoCellsToMp4(mergedAll, bgVid.Framerate, outputDirectory); % test code
 end
