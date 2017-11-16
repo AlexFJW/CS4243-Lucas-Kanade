@@ -1,27 +1,32 @@
 % creates scene 7 in sceneVideos directory
 % horizontal flip human => bool,
 % format for rotation degree follows rotateCells method
-function [] = createScene7(humanVideoDirectory, horizontalFlipHuman, rotationDegree, outputDirectory)
+% format for child to parent: %
+function [] = createScene7(humanVideoDirectory, childToParentRatio, ...
+                        horizontalFlipHuman, rotationDegree, outputDirectory)
     % load bg video cells
     bgVid = VideoReader('videos/background/antman2.mp4');
     bgCells = videoToCells(bgVid);
     [~, totalBgFrames] = size(bgCells);
+    [bgHeight, bgWidth, ~] = size(bgCells{1});
 
     % convert human video to cells
     humanVid = VideoReader(humanVideoDirectory);
     humanCells = videoToCells(humanVid);
 
+    % resize human cells to fraction of bg
+    humanCells = resizeChild(humanCells, bgHeight, bgWidth, childToParentRatio);
+
     % rotate human cells
     humanCells = rotateCells(humanCells, rotationDegree, true);
 
+    % flip if needed
     if (horizontalFlipHuman)
         humanCells = horizontalFlipCells(humanCells);
     end
 
     % extend human vid
     humanCells = extendVideo(humanCells, totalBgFrames);
-    videoCellsToMp4(humanCells, bgVid.Framerate, 'test_output/scene7test.mp4'); % test code
-    % flip if needed
 
     % split human video into parts, by frames.
     % should have 8 parts
@@ -53,8 +58,6 @@ function [] = createScene7(humanVideoDirectory, horizontalFlipHuman, rotationDeg
     bgPart7 = bgCells(part6End+1:part7End);
     bgPart8 = bgCells(part7End+1:end);
 
-    % do fadein for 1st parts
-    humanPart1 = fadeCells(humanPart1, bgPart1, false);
 
     % do resize operation on parts requiring it
     % 1, enlarge by 1.2x
@@ -76,7 +79,14 @@ function [] = createScene7(humanVideoDirectory, horizontalFlipHuman, rotationDeg
     humanPart6 = resizeImmediately(humanPart6, sizeNow);
     humanPart7 = resizeImmediately(humanPart3, sizeNow);
 
+    % do fadein for 1st parts
+    % TODO: add fade back later! there might be some bug with fading
+    %humanPart1 = fadeCells(humanPart1, bgPart1, false);
+
+
     % cant test like this, since some cells dont have same sized matrices
+    merged1 = mergeCellsWithTranslation(humanPart1, bgPart1, 150, 200, 150, 200);
+    videoCellsToMp4(merged1, bgVid.Framerate, 'test_output/1.mp4'); % test code
     %videoCellsToMp4(humanPart1, bgVid.Framerate, 'test_output/1.mp4'); % test code
     %videoCellsToMp4(humanPart2, bgVid.Framerate, 'test_output/2.mp4'); % test code
     %videoCellsToMp4(humanPart3, bgVid.Framerate, 'test_output/3.mp4'); % test code
