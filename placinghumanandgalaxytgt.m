@@ -20,15 +20,15 @@ humanCells = rotateCells(humanCells, -90, true);
 humanCells = extendVideo(humanCells, totalBgFrames);
 
 %frame1
+humanCells = horizontalFlipCells(humanCells);
 humanPart1 = humanCells(1:89);
 bgPart1 = bgCells(1:89);
 
-humanPart1 = resizeImmediately(humanPart1, 3);
-humanPart1 = rotateOverTime(humanPart1);
-humanPart1= resizeOverTime(humanPart1, 0.1);
+humanPart1 = resizeImmediately(humanPart1, 2.5);
+humanPart1= resizeOverTime(humanPart1, 0.5);
 
-lastX = -50; lastY = -50;
-nextX = 600; nextY = 400;
+lastX = 1280; lastY = -50;
+nextX = 700; nextY = 400;
 [merged1, lastX, lastY] = mergeCellsWithTranslation(humanPart1, bgPart1, lastX, lastY, nextX, nextY);
 
 videoCellsToMp4(merged1, bgVid.Framerate, 'jorelvideo/humangalaxy.mp4'); % test code
