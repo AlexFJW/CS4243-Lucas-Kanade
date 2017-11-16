@@ -4,7 +4,7 @@
 % format for child to parent: %
 function [] = createScene4(humanVideoDirectory, childToParentRatio, ...
                         horizontalFlipHuman, rotationDegree, ...
-                        startFrame, endFrame, outputDirectory)
+                        startFrame, endFrame, outputDirectory, useGaussian)
     % load bg video cells
     bgVid = VideoReader('videos/background/supernova2.mp4');
     bgCells = videoToCells(bgVid);
@@ -75,11 +75,11 @@ function [] = createScene4(humanVideoDirectory, childToParentRatio, ...
     minion4 = resizeChild(humanCells2, bgHeight, bgWidth, 0.8);
     minion4 = rotateOverTime(minion4, 75);
                                                                             %startX and startY are continuation from previous scene
-    [merged1, lastX, lastY] = mergeCellsWithTranslation(minion1, bgCells, middleX-xBuffer, middleY, middleX-4*xBuffer, middleY+yBuffer);
-    [merged2, lastX, lastY] = mergeCellsWithTranslation(minion2, merged1, middleX+xBuffer, middleY, middleX+3*xBuffer, middleY+yBuffer);
-    [merged3, lastX, lastY] = mergeCellsWithTranslation(minion3, merged2, middleX-xBuffer, middleY+yBuffer, middleX-4*xBuffer, middleY+3*yBuffer);
-    [merged4, lastX, lastY] = mergeCellsWithTranslation(minion4, merged3, middleX+xBuffer, middleY+yBuffer, middleX+4*xBuffer, middleY+3*yBuffer);
-    [merged5, lastX, lastY] = mergeCellsWithTranslation(humanCells1, merged4, middleX-xBuffer, middleY+yBuffer, lhsEndX, lhsEndY);
-    [merged6, lastX, lastY] = mergeCellsWithTranslation(humanCells2, merged5, middleX+xBuffer, middleY+yBuffer, rhsEndX, rhsEndY);
+    [merged1, lastX, lastY] = mergeCellsWithTranslation(minion1, bgCells, middleX-xBuffer, middleY, middleX-4*xBuffer, middleY+yBuffer, useGaussian);
+    [merged2, lastX, lastY] = mergeCellsWithTranslation(minion2, merged1, middleX+xBuffer, middleY, middleX+3*xBuffer, middleY+yBuffer, useGaussian);
+    [merged3, lastX, lastY] = mergeCellsWithTranslation(minion3, merged2, middleX-xBuffer, middleY+yBuffer, middleX-4*xBuffer, middleY+3*yBuffer, useGaussian);
+    [merged4, lastX, lastY] = mergeCellsWithTranslation(minion4, merged3, middleX+xBuffer, middleY+yBuffer, middleX+4*xBuffer, middleY+3*yBuffer, useGaussian);
+    [merged5, lastX, lastY] = mergeCellsWithTranslation(humanCells1, merged4, middleX-xBuffer, middleY+yBuffer, lhsEndX, lhsEndY, useGaussian);
+    [merged6, lastX, lastY] = mergeCellsWithTranslation(humanCells2, merged5, middleX+xBuffer, middleY+yBuffer, rhsEndX, rhsEndY, useGaussian);
     
     videoCellsToMp4(merged6, bgVid.Framerate, outputDirectory); % test code
