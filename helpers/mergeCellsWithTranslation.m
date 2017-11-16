@@ -86,13 +86,46 @@ function [merged, destX, destY] = mergeCellsWithTranslation(overlay, background,
         blackB = overlayFrame(:,:,3) == 0;
         % get the actual black pixels in one channel
         blackPixels_Overlay = find(blackR & blackG & blackB);
-        blackAll_1ch = zeros(size(blackR));
-        blackAll_1ch(blackPixels_Overlay) = 1; % flag 1 as pixels that are black
+        blackAll_1ch = ones(size(blackR));
+        blackAll_1ch(blackPixels_Overlay) = 0; % flag 0 as pixels that are black
         blackAll_3ch = repmat(blackAll_1ch, [1,1,3]);
-        pixelsToGrab = find(blackAll_3ch == 1);
+        pixelsToGrab = find(blackAll_3ch == 0);
 
         % fill overlay's black pixels with pixels from bg
         overlayFrame(pixelsToGrab) = bgWindow(pixelsToGrab);
+
+        % grab pixels we didn't replace, to apply gaussian blur
+        % do this in 2d since blackAll_3ch is 3 layers of the same thing
+        nonBlackPixels = find(blackAll_1ch == 0);
+        % do convolution to find surrounding pixels + non black pixels
+        % https://www.mathworks.com/matlabcentral/answers/34735-how-to-count-black-pixels-in-a-region-of-an-image-that-can-only-have-1-white-neighbor-pixel
+        sumFilter = ones(3,3);
+        surroundingAndNonBlack_matrix = conv2(sumFilter, blackAll_1ch, 'same');
+        surroundingAndNonBlack = find(surroundingAndNonBlack_matrix > 0);
+        surroundingPixels = setdiff(surroundingAndNonBlack, nonBlackPixels);
+        [I_surrounding, J_surrounding] = ind2sub(size(blackAll_1ch), surroundingPixels);
+
+        % for each surrounding value, apply a gaussian filter.
+        overlayFrameCopy = overlayFrame;
+        for i = size(I_surrounding)
+            i_coordinate = I_surrounding(i);
+            j_coordinate = J_surrounding(i);
+            % get the 3x3x3 window in overlayFrame
+            % apply gaussian filter on the window, with 'same'
+            % get the center value (1x1x3) & replace the one in overlayFrame (1x1x3)
+            guassianWindow = overlayFrameCopy(...
+                                max(1,i_coordinate-1) : min(overlayHeight, i_coordinate+1), ...
+                                max(1,j_coordinate-1) : min(overlayWidth, j_coordinate+1), ...
+                                :);
+            % try 0.5 first
+            gaussianedBlock = imgaussfilt(gaussianWindow, 0.5);
+
+            % grab the center pixel (1x1x3)
+            gaussianedPixel = guassianedBlock(min(I_surrouding, 2),...
+                                             min(J_surrounding, 2),...
+                                             :);
+            overlayFrame(i_coordinate, j_coordinate, :) = guassianedPixel;
+        end
 
         % paste overlay onto background (the same window we got above)
         bgFrame(max(1, yTop):min(bgHeight, yBottom), ...
