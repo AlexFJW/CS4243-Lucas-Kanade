@@ -24,9 +24,7 @@ humanCells = horizontalFlipCells(humanCells);
 humanPart1 = humanCells(1:89);
 bgPart1 = bgCells(1:89);
 
-humanPart1(5:15) = overlayColor(humanPart1(5:15),[255 0 0],0.5);
-humanPart1(30:45) = overlayColor(humanPart1(30:45),[0 0 255],0.5);
-humanPart1(60:75) = overlayColor(humanPart1(60:75),[0 255 0],0.5);
+humanPart1(5:10) = overlayColor(humanPart1(5:10),[1 0 0],1);
 humanPart1 = resizeImmediately(humanPart1, 2.5);
 humanPart1= resizeOverTime(humanPart1, 0.5);
 
