@@ -1,0 +1,1 @@
+createScene4('videos/filtered/human1_1_out_60_clean.mp4',0.45, false, -40, 5, 8, 'videos/scene4.1')
