@@ -83,9 +83,9 @@ function [merged, destX, destY] = mergeCellsWithTranslation(overlay, background,
         overlayFrame = overlayFrame(topBound:bottomBound, leftBound:rightBound, 1:3);
 
         % Get location of the black pixels in all channels (overlay's coordinates)
-        blackR = overlayFrame(:,:,1) <= 5;
-        blackG = overlayFrame(:,:,2) <= 5;
-        blackB = overlayFrame(:,:,3) <= 5;
+        blackR = overlayFrame(:,:,1) <= 4;
+        blackG = overlayFrame(:,:,2) <= 4;
+        blackB = overlayFrame(:,:,3) <= 4;
         % get the actual black pixels in one channel
         blackPixels_Overlay = find(blackR & blackG & blackB);
         blackAll_1ch = ones(size(blackR));

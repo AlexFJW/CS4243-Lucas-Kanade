@@ -91,5 +91,7 @@ function [] = createScene6(humanVideoDirectory, childToParentRatio, ...
     % append all merged together
     mergedAll = [merged1 merged2 merged3];
 
+    % try dropping the colors
+    mergedAll = squeezeBrightnessContrastForCells(mergedAll);
     videoCellsToMp4(mergedAll, bgVid.Framerate, 'test_output/all.mp4'); % test code
 end
