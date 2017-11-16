@@ -102,11 +102,10 @@ function [merged, destX, destY] = mergeCellsWithTranslation(overlay, background,
             nonBlackPixels = find(blackAll_1ch == 0);
             % do convolution to find surrounding pixels + non black pixels
             % https://www.mathworks.com/matlabcentral/answers/34735-how-to-count-black-pixels-in-a-region-of-an-image-that-can-only-have-1-white-neighbor-pixel
-            sumFilter = ones(3,3);
+            sumFilter = ones(3,3); sumFilter(2,2) = 0;
             surroundingAndNonBlack_matrix = conv2(blackAll_1ch, sumFilter, 'same');
-            surroundingAndNonBlack = find(surroundingAndNonBlack_matrix > 0);
-            surroundingPixels = setdiff(surroundingAndNonBlack, nonBlackPixels);
-            [I_surrounding, J_surrounding] = ind2sub(size(blackAll_1ch), surroundingPixels);
+            [I_surrounding, J_surrounding] = find(surroundingAndNonBlack_matrix <= 5 ...
+                                                    & surroundingAndNonBlack_matrix > 0);
             [numSurrounding, ~] = size(I_surrounding);
 
             % for each surrounding value, apply a gaussian filter.

@@ -14,6 +14,9 @@ function [] = createScene6(humanVideoDirectory, childToParentRatio, ...
     humanVid = VideoReader(humanVideoDirectory);
     humanCells = videoToCells(humanVid);
 
+    [~, initialNumHumanFrames] = size(humanCells);
+    humanCells = humanCells(5:8);
+
     % resize human cells to fraction of bg
     humanCells = resizeChild(humanCells, bgHeight, bgWidth, childToParentRatio);
 
