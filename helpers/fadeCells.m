@@ -15,7 +15,7 @@ function [ fadedCells ] = fadeCells( cells, bgCells, isFadeOut )
         numCells = ngBgCells;
     end
     
-    fadedCells = cell(numCells);
+    fadedCells = cell(1, numCells);
     ratio = 0;
     if (isFadeOut)
         ratio = 1;
@@ -24,7 +24,15 @@ function [ fadedCells ] = fadeCells( cells, bgCells, isFadeOut )
     stepRatio = 1/(numCells-1);
     
     for i = 1:numCells
-        fadedCells{i} = ratio .* cells{i} + (1-ratio) .* bgCells{i};
+        isPixel = sum(cells{i},3);
+        isPixel(isPixel == 0) = 0;
+        isPixel(isPixel ~= 0) = 1;
+        isPixel = repmat(isPixel, [1 1 3]);
+        
+        fadedCells{i} = uint8( ...
+            (double(ratio) .* double(cells{i}) + double(1-ratio) .* double(bgCells{i})) .* double(isPixel) ... % get faded human pixels
+            + (double(1-isPixel) .* double(bgCells{i})) ... % get solid background
+        );
         if (isFadeOut)
             ratio = ratio - stepRatio;
         else

@@ -5,7 +5,7 @@
 % returns resizedResult: the resized video matrix cells
 function [resizedResult] = resizeImmediately(videoCells, endSize)
     [~, numFrames] = size(videoCells);
-    resizedResult = cell(numFrames);
+    resizedResult = cell(1, numFrames);
     for i = 1 : numFrames
         frame = videoCells{i};
         resizedResult{i} = imresize(frame, endSize);

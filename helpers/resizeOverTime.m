@@ -5,7 +5,7 @@
 % returns resizedResult: the resized video matrix cells
 function [resizedResult] = resizeOverTime(videoCells, endSize)
     [~, numFrames] = size(videoCells);
-    resizedResult = cell(numFrames);
+    resizedResult = cell(1, numFrames);
 
     sizeStep = (1-endSize)/(numFrames-1);
     currentSize = 1;
