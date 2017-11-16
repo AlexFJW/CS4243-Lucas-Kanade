@@ -10,7 +10,7 @@
 % params startY: y coordinate of overlay's start position (see above)
 % params destX: x coordinate of overlay's end position (see above)
 % params destY: y coordinate of overlay's end position (see above)
-function [merged] = mergeCellsWithTranslation(overlay, background, startX, startY, destX, destY)
+function [merged, destX, destY] = mergeCellsWithTranslation(overlay, background, startX, startY, destX, destY)
     [~, numOverlayFrames] = size(overlay);
     [~, numBgFrames] = size(background);
 
