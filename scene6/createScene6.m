@@ -50,6 +50,7 @@ function [] = createScene6(humanVideoDirectory, childToParentRatio, ...
     humanPart2 = rotateCells(humanPart2, rotationNow, false);
     humanPart3 = rotateCells(humanPart3, rotationNow, false);
 
+
     % do resize operation on parts requiring it
     % 1, enlarge by 2.3x
     % 3, shrink by 2.3x
@@ -61,11 +62,12 @@ function [] = createScene6(humanVideoDirectory, childToParentRatio, ...
     humanPart1 = resizeOverTime(humanPart1, sizeNow);
     humanPart2 = resizeImmediately(humanPart2, sizeNow);
     sizeNow = sizeNow * resize3;
-    humanPart3 = resizeOverTime(humanPart3, sizeNow);
-
     disp(2)
     size(humanPart3)
-    size(bgPart3)
+    humanPart3 = resizeOverTime(humanPart3, sizeNow);
+
+    disp(3)
+    size(humanPart3)
 
     % move south-west
     lastX = 400; lastY = 300;
@@ -77,9 +79,6 @@ function [] = createScene6(humanVideoDirectory, childToParentRatio, ...
     nextY = lastY;
     [merged2, lastX, lastY] = mergeCellsWithTranslation(humanPart2, bgPart2, lastX, lastY, nextX, nextY);
 
-    disp(3)
-    size(humanPart3)
-    size(bgPart3)
 
 
     % a little right
