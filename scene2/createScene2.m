@@ -30,7 +30,7 @@ function [] = createScene2(humanVideoPath, outputVideoPath)
 
     lastX = 1250; lastY = 50;
     nextX = 700; nextY = 200;
-    [merged1, lastX, lastY] = mergeCellsWithTranslation(humanPart1, bgPart1, lastX, lastY, nextX, nextY);
+    [merged1, lastX, lastY] = mergeCellsWithTranslation(humanPart1, bgPart1, lastX, lastY, nextX, nextY, false);
 
     %human 2
     humanPart2 = humanCells(1:totalBgFrames);
@@ -40,7 +40,7 @@ function [] = createScene2(humanVideoPath, outputVideoPath)
 
     lastX = 1280; lastY = 400;
     nextX = 0; nextY = 200;
-    [merged, lastX, lastY] = mergeCellsWithTranslation(humanPart2, merged1, lastX, lastY, nextX, nextY);
+    [merged, lastX, lastY] = mergeCellsWithTranslation(humanPart2, merged1, lastX, lastY, nextX, nextY, false);
 
     videoCellsToMp4(merged, bgVid.Framerate, outputVideoPath); % test code
 end
