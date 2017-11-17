@@ -74,11 +74,11 @@ function [] = createScene4(humanVideoDirectory, childToParentRatio, ...
     minion4 = resizeChild(humanCells2, bgHeight, bgWidth, 0.8);
     minion4 = rotateOverTime(minion4, 75);
                                                                             %startX and startY are continuation from previous scene
-    [merged1, lastX, lastY] = mergeCellsWithTranslation(minion1, bgCells, middleX-xBuffer, middleY, middleX-4*xBuffer*xScale, middleY+yBuffer*yScale, blurOverlayEdges, false);
-    [merged2, lastX, lastY] = mergeCellsWithTranslation(minion2, merged1, middleX+xBuffer, middleY, middleX+3*xBuffer*xScale, middleY+yBuffer*yScale, blurOverlayEdges, false);
-    [merged3, lastX, lastY] = mergeCellsWithTranslation(minion3, merged2, middleX-xBuffer, middleY+yBuffer, middleX-4*xBuffer*xScale, middleY+3*yBuffer*yScale, blurOverlayEdges, false);
-    [merged4, lastX, lastY] = mergeCellsWithTranslation(minion4, merged3, middleX+xBuffer, middleY+yBuffer, middleX+4*xBuffer*xScale, middleY+3*yBuffer*yScale, blurOverlayEdges, false);
-    [merged5, lastX, lastY] = mergeCellsWithTranslation(humanCells1, merged4, middleX-xBuffer, middleY+yBuffer, lhsEndX, lhsEndY, blurOverlayEdges, false);
-    [merged6, lastX, lastY] = mergeCellsWithTranslation(humanCells2, merged5, middleX+xBuffer, middleY+yBuffer, rhsEndX, rhsEndY, blurOverlayEdges, false);
+    [merged1, lastX, lastY] = mergeCellsWithTranslation(minion1, bgCells, middleX-xBuffer, middleY, middleX-4*xBuffer*xScale, middleY+yBuffer*yScale, blurOverlayEdges, NaN);
+    [merged2, lastX, lastY] = mergeCellsWithTranslation(minion2, merged1, middleX+xBuffer, middleY, middleX+3*xBuffer*xScale, middleY+yBuffer*yScale, blurOverlayEdges, NaN);
+    [merged3, lastX, lastY] = mergeCellsWithTranslation(minion3, merged2, middleX-xBuffer, middleY+yBuffer, middleX-4*xBuffer*xScale, middleY+3*yBuffer*yScale, blurOverlayEdges, NaN);
+    [merged4, lastX, lastY] = mergeCellsWithTranslation(minion4, merged3, middleX+xBuffer, middleY+yBuffer, middleX+4*xBuffer*xScale, middleY+3*yBuffer*yScale, blurOverlayEdges, NaN);
+    [merged5, lastX, lastY] = mergeCellsWithTranslation(humanCells1, merged4, middleX-xBuffer, middleY+yBuffer, lhsEndX, lhsEndY, blurOverlayEdges, NaN);
+    [merged6, lastX, lastY] = mergeCellsWithTranslation(humanCells2, merged5, middleX+xBuffer, middleY+yBuffer, rhsEndX, rhsEndY, blurOverlayEdges, NaN);
 
     videoCellsToMp4(merged6, bgVid.Framerate, outputDirectory); % test code

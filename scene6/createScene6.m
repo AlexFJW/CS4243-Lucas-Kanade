@@ -33,10 +33,10 @@ function [] = createScene6(humanVideoDirectory, childToParentRatio, ...
 
     % split human video into parts, by frames.
     % should have 3 parts
-    totalQuicktimeFrames = 48;
+    totalQuicktimeFrames = 50;
 
-    part1End = ceil(15/totalQuicktimeFrames * totalBgFrames);
-    part2End = ceil(25/totalQuicktimeFrames * totalBgFrames);
+    part1End = ceil(17/totalQuicktimeFrames * totalBgFrames);
+    part2End = ceil(28/totalQuicktimeFrames * totalBgFrames);
 
     humanPart1 = humanCells(1:part1End);
     humanPart2 = humanCells(part1End+1:part2End);
@@ -72,17 +72,17 @@ function [] = createScene6(humanVideoDirectory, childToParentRatio, ...
     % move south-west
     lastX = 550; lastY = 410;
     nextX = 430; nextY = 300;
-    [merged1, lastX, lastY] = mergeCellsWithTranslation(humanPart1, bgPart1, lastX, lastY, nextX, nextY, blurOverlayEdges, false);
+    [merged1, lastX, lastY] = mergeCellsWithTranslation(humanPart1, bgPart1, lastX, lastY, nextX, nextY, blurOverlayEdges, 1);
 
     % stationary
     nextX = lastX;
     nextY = lastY;
-    [merged2, lastX, lastY] = mergeCellsWithTranslation(humanPart2, bgPart2, lastX, lastY, nextX, nextY, blurOverlayEdges, false);
+    [merged2, lastX, lastY] = mergeCellsWithTranslation(humanPart2, bgPart2, lastX, lastY, nextX, nextY, blurOverlayEdges, NaN);
 
     % move right a lot
     nextX = lastX + 72;
     nextY = lastY;
-    [merged3, lastX, lastY] = mergeCellsWithTranslation(humanPart3, bgPart3, lastX, lastY, nextX, nextY, blurOverlayEdges, false);
+    [merged3, lastX, lastY] = mergeCellsWithTranslation(humanPart3, bgPart3, lastX, lastY, nextX, nextY, blurOverlayEdges, 1);
 
     % videoCellsToMp4(merged1, bgVid.Framerate, 'test_output/1.mp4'); % test code
     % videoCellsToMp4(merged2, bgVid.Framerate, 'test_output/2.mp4'); % test code

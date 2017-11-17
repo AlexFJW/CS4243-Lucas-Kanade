@@ -11,9 +11,9 @@
 % params destX: x coordinate of overlay's end position (see above)
 % params destY: y coordinate of overlay's end position (see above)
 % params blurOverlayEdges: use gaussian blur on overlay edges, expensive, don't use when testing
-% params emphasizeMotionBlur: emphasize motion blur when translating overlay
+% params blurAngle: angle for motion blur, use NaN for no blur, otherwise follow counterclockwise direction. 90 => left
 function [merged, destX, destY] = mergeCellsWithTranslation(overlay, background,...
-                            startX, startY, destX, destY, blurOverlayEdges, emphasizeMotionBlur)
+                            startX, startY, destX, destY, blurOverlayEdges, blurAngle)
 
     [~, numOverlayFrames] = size(overlay);
     [~, numBgFrames] = size(background);
@@ -133,14 +133,13 @@ function [merged, destX, destY] = mergeCellsWithTranslation(overlay, background,
             end
         end
 
-        % add image movement effect
-        distanceTravelled = max(sqrt(dX.^2+dY.^2), 0.001);
-        angleOfMovement = -(90 - atan(-dY/dX) * 180 / pi);
-        if (isnan(angleOfMovement))
+        % add motion blur effect
+        if (~isnan(blurAngle))
+            distanceTravelled = max(sqrt(dX.^2+dY.^2), 0.01);
             angleOfMovement = rand * 360 - 180;
+            motionFilter = fspecial('motion', distanceTravelled, angleOfMovement);
+            overlayFrame = imfilter(overlayFrame, motionFilter, 'replicate');
         end
-        motionFilter = fspecial('motion', distanceTravelled, angleOfMovement);
-        overlayFrame = imfilter(overlayFrame, motionFilter, 'replicate');
 
         % paste overlay onto background (the same window we got above)
         bgFrame(max(1, yTop):min(bgHeight, yBottom), ...

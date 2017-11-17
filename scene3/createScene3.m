@@ -43,8 +43,8 @@ function [] = createScene3(humanVideoDirectory, childToParentRatio, ...
 
     middleX = floor(width/2);
     middleY = floor(height/2);
-    [merged1, lastX, lastY] = mergeCellsWithTranslation(humanCells1, bgCells, lhsStartX, lhsStartY, middleX-xBuffer, middleY+yBuffer, blurOverlayEdges, false);
-    [merged2, lastX, lastY] = mergeCellsWithTranslation(humanCells2, merged1, rhsStartX, rhsStartY, middleX+xBuffer, middleY+yBuffer, blurOverlayEdges, false);
+    [merged1, lastX, lastY] = mergeCellsWithTranslation(humanCells1, bgCells, lhsStartX, lhsStartY, middleX-xBuffer, middleY+yBuffer, blurOverlayEdges, NaN);
+    [merged2, lastX, lastY] = mergeCellsWithTranslation(humanCells2, merged1, rhsStartX, rhsStartY, middleX+xBuffer, middleY+yBuffer, blurOverlayEdges, NaN);
 
     videoCellsToMp4(merged2, bgVid.Framerate, outputDirectory); % test code
 end
