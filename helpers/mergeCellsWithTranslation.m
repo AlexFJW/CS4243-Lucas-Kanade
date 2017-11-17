@@ -84,9 +84,10 @@ function [merged, destX, destY] = mergeCellsWithTranslation(overlay, background,
         overlayFrame = overlayFrame(topBound:bottomBound, leftBound:rightBound, 1:3);
 
         % Get location of the black pixels in all channels (overlay's coordinates)
-        blackR = overlayFrame(:,:,1) <= 4;
-        blackG = overlayFrame(:,:,2) <= 4;
-        blackB = overlayFrame(:,:,3) <= 4;
+        blackThreshold = 4; % consider all equal & below black
+        blackR = overlayFrame(:,:,1) <= blackThreshold;
+        blackG = overlayFrame(:,:,2) <= blackThreshold;
+        blackB = overlayFrame(:,:,3) <= blackThreshold;
         % get the actual black pixels in one channel
         blackPixels_Overlay = find(blackR & blackG & blackB);
         blackAll_1ch = ones(size(blackR));
@@ -101,29 +102,33 @@ function [merged, destX, destY] = mergeCellsWithTranslation(overlay, background,
             % grab pixels we didn't replace, to apply gaussian blur
             % do this in 2d since blackAll_3ch is 3 layers of the same thing
             nonBlackPixels = find(blackAll_1ch == 0);
-            % do convolution to find surrounding pixels + non black pixels
+            % do convolution to find pixels in overlay that are near the edge
             % https://www.mathworks.com/matlabcentral/answers/34735-how-to-count-black-pixels-in-a-region-of-an-image-that-can-only-have-1-white-neighbor-pixel
-            sumFilter = ones(3,3); sumFilter(2,2) = 0;
-            surroundingAndNonBlack_matrix = conv2(blackAll_1ch, sumFilter, 'same');
-            [I_surrounding, J_surrounding] = find(surroundingAndNonBlack_matrix <= 7 ...
-                                                    & surroundingAndNonBlack_matrix > 0);
+            % a larger length means grabbing pixels near the edge, but not exactly at the edge
+            filterLength = 5;
+            middle = ceil(filterLength/2);
+            threshold = floor(filterLength*filterLength*9/10);
+            sumFilter = ones(filterLength, filterLength); sumFilter(middle, middle) = 0;
+            fatEdgeMatrix = conv2(blackAll_1ch, sumFilter, 'same');
+            [I_surrounding, J_surrounding] = find(fatEdgeMatrix <= threshold ...
+                                                    & fatEdgeMatrix > 0);
             [numSurrounding, ~] = size(I_surrounding);
 
             % for each surrounding value, apply a gaussian filter.
+            % use a large border, for higher chance of getting a good color (background subtraction has a lot of noise at edge)
             borderSize = 10;
             overlayFrameCopy = padarray(overlayFrame,[borderSize borderSize], 'replicate', 'both');
 
             for j = 1:numSurrounding
                 i_coordinate = I_surrounding(j);
                 j_coordinate = J_surrounding(j);
-                % get the 3x3x3 window in overlayFrame
-                % apply gaussian filter on the window, with 'same'
+                % get the window in overlayFrame & apply gaussian filter on the window,
                 % get the center value (1x1x3) & replace the one in overlayFrame (1x1x3)
                 gaussianWindow = overlayFrameCopy(...
                                     i_coordinate : i_coordinate+2*borderSize, ...
                                     j_coordinate : j_coordinate+2*borderSize, ...
                                     :);
-                % try 0.5 first
+                % use a high value for standard deviation so we get more smoothing
                 gaussianedBlock = imgaussfilt(gaussianWindow, 10);
 
                 % grab the center pixel (1x1x3)

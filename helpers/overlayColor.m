@@ -7,11 +7,9 @@
 % for original cell color
 % returns coloredCells: the colored matrix cells
 function [ coloredCells ] = overlayColor( cells, rgb, opacity)
-%OVERLAYCOLOR Summary of this function goes here
-%   Detailed explanation goes here
     [~, numCells] = size(cells);
     coloredCells = cell(1, numCells);
-    
+
     [height, width, ~] = size(cells{1});
     rgbMatrix = repmat(  reshape(rgb,1,1,[]),   height, width);
 
@@ -21,8 +19,7 @@ function [ coloredCells ] = overlayColor( cells, rgb, opacity)
         isPixel(isPixel == 0) = 0;
         isPixel(isPixel ~= 0) = 1;
         isPixel = repmat(isPixel, [1 1 3]);
-        
+
         coloredCells{i} = uint8((double((1-opacity) .* cells{i}) + double(opacity .* rgbMatrix)) .* double(isPixel));
     end
 end
-
