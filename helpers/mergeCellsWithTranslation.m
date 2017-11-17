@@ -10,7 +10,9 @@
 % params startY: y coordinate of overlay's start position (see above)
 % params destX: x coordinate of overlay's end position (see above)
 % params destY: y coordinate of overlay's end position (see above)
-function [merged, destX, destY] = mergeCellsWithTranslation(overlay, background, startX, startY, destX, destY)
+function [merged, destX, destY] = mergeCellsWithTranslation(overlay, background,...
+                            startX, startY, destX, destY, useGaussian)
+
     [~, numOverlayFrames] = size(overlay);
     [~, numBgFrames] = size(background);
 
@@ -81,18 +83,62 @@ function [merged, destX, destY] = mergeCellsWithTranslation(overlay, background,
         overlayFrame = overlayFrame(topBound:bottomBound, leftBound:rightBound, 1:3);
 
         % Get location of the black pixels in all channels (overlay's coordinates)
-        blackR = overlayFrame(:,:,1) == 0;
-        blackG = overlayFrame(:,:,2) == 0;
-        blackB = overlayFrame(:,:,3) == 0;
+        blackR = overlayFrame(:,:,1) <= 4;
+        blackG = overlayFrame(:,:,2) <= 4;
+        blackB = overlayFrame(:,:,3) <= 4;
         % get the actual black pixels in one channel
         blackPixels_Overlay = find(blackR & blackG & blackB);
-        blackAll_1ch = zeros(size(blackR));
-        blackAll_1ch(blackPixels_Overlay) = 1; % flag 1 as pixels that are black
+        blackAll_1ch = ones(size(blackR));
+        blackAll_1ch(blackPixels_Overlay) = 0; % flag 0 as pixels that are black
         blackAll_3ch = repmat(blackAll_1ch, [1,1,3]);
-        pixelsToGrab = find(blackAll_3ch == 1);
+        pixelsToGrab = find(blackAll_3ch == 0);
 
         % fill overlay's black pixels with pixels from bg
         overlayFrame(pixelsToGrab) = bgWindow(pixelsToGrab);
+
+        if (useGaussian)
+            % grab pixels we didn't replace, to apply gaussian blur
+            % do this in 2d since blackAll_3ch is 3 layers of the same thing
+            nonBlackPixels = find(blackAll_1ch == 0);
+            % do convolution to find surrounding pixels + non black pixels
+            % https://www.mathworks.com/matlabcentral/answers/34735-how-to-count-black-pixels-in-a-region-of-an-image-that-can-only-have-1-white-neighbor-pixel
+            sumFilter = ones(3,3); sumFilter(2,2) = 0;
+            surroundingAndNonBlack_matrix = conv2(blackAll_1ch, sumFilter, 'same');
+            [I_surrounding, J_surrounding] = find(surroundingAndNonBlack_matrix <= 7 ...
+                                                    & surroundingAndNonBlack_matrix > 0);
+            [numSurrounding, ~] = size(I_surrounding);
+
+            % for each surrounding value, apply a gaussian filter.
+            borderSize = 10;
+            overlayFrameCopy = padarray(overlayFrame,[borderSize borderSize], 'replicate', 'both');
+
+            for j = 1:numSurrounding
+                i_coordinate = I_surrounding(j);
+                j_coordinate = J_surrounding(j);
+                % get the 3x3x3 window in overlayFrame
+                % apply gaussian filter on the window, with 'same'
+                % get the center value (1x1x3) & replace the one in overlayFrame (1x1x3)
+                gaussianWindow = overlayFrameCopy(...
+                                    i_coordinate : i_coordinate+2*borderSize, ...
+                                    j_coordinate : j_coordinate+2*borderSize, ...
+                                    :);
+                % try 0.5 first
+                gaussianedBlock = imgaussfilt(gaussianWindow, 10);
+
+                % grab the center pixel (1x1x3)
+                gaussianedPixel = gaussianedBlock(borderSize+1, borderSize+1, :);
+                overlayFrame(i_coordinate, j_coordinate, :) = gaussianedPixel;
+            end
+        end
+
+        % add image movement effect
+        distanceTravelled = max(sqrt(dX.^2+dY.^2), 0.001);
+        angleOfMovement = -(90 - atan(-dY/dX) * 180 / pi);
+        if (isnan(angleOfMovement))
+            angleOfMovement = rand * 360 - 180;
+        end
+        motionFilter = fspecial('motion', distanceTravelled, angleOfMovement);
+        overlayFrame = imfilter(overlayFrame, motionFilter, 'replicate');
 
         % paste overlay onto background (the same window we got above)
         bgFrame(max(1, yTop):min(bgHeight, yBottom), ...
