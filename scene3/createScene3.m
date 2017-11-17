@@ -4,6 +4,7 @@
 % format for child to parent: %
 function [] = createScene3(humanVideoDirectory, childToParentRatio, ...
                         horizontalFlipHuman, rotationDegree, ...
+                        xBuffer, yBuffer, ...
                         startFrame, endFrame, outputDirectory, blurOverlayEdges)
     % load bg video cells
     bgVid = VideoReader('videos/background/supernova1.mp4');
@@ -42,8 +43,6 @@ function [] = createScene3(humanVideoDirectory, childToParentRatio, ...
 
     middleX = floor(width/2);
     middleY = floor(height/2);
-    xBuffer = 160;
-    yBuffer = 120;
     [merged1, lastX, lastY] = mergeCellsWithTranslation(humanCells1, bgCells, lhsStartX, lhsStartY, middleX-xBuffer, middleY+yBuffer, blurOverlayEdges, false);
     [merged2, lastX, lastY] = mergeCellsWithTranslation(humanCells2, merged1, rhsStartX, rhsStartY, middleX+xBuffer, middleY+yBuffer, blurOverlayEdges, false);
 

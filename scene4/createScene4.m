@@ -4,6 +4,7 @@
 % format for child to parent: %
 function [] = createScene4(humanVideoDirectory, childToParentRatio, ...
                         horizontalFlipHuman, rotationDegree, ...
+                        xBuffer, yBuffer, xScale, yScale,...
                         startFrame, endFrame, outputDirectory, blurOverlayEdges)
     % load bg video cells
     bgVid = VideoReader('videos/background/supernova2.mp4');
@@ -63,8 +64,6 @@ function [] = createScene4(humanVideoDirectory, childToParentRatio, ...
 
     middleX = floor(width/2);
     middleY = floor(height/2);
-    xBuffer = 160;
-    yBuffer = 120;
 
     minion1 = resizeChild(humanCells1, bgHeight, bgWidth, 0.8);
     minion1 = rotateOverTime(minion1, -45);
@@ -75,10 +74,10 @@ function [] = createScene4(humanVideoDirectory, childToParentRatio, ...
     minion4 = resizeChild(humanCells2, bgHeight, bgWidth, 0.8);
     minion4 = rotateOverTime(minion4, 75);
                                                                             %startX and startY are continuation from previous scene
-    [merged1, lastX, lastY] = mergeCellsWithTranslation(minion1, bgCells, middleX-xBuffer, middleY, middleX-4*xBuffer, middleY+yBuffer, blurOverlayEdges, false);
-    [merged2, lastX, lastY] = mergeCellsWithTranslation(minion2, merged1, middleX+xBuffer, middleY, middleX+3*xBuffer, middleY+yBuffer, blurOverlayEdges, false);
-    [merged3, lastX, lastY] = mergeCellsWithTranslation(minion3, merged2, middleX-xBuffer, middleY+yBuffer, middleX-4*xBuffer, middleY+3*yBuffer, blurOverlayEdges, false);
-    [merged4, lastX, lastY] = mergeCellsWithTranslation(minion4, merged3, middleX+xBuffer, middleY+yBuffer, middleX+4*xBuffer, middleY+3*yBuffer, blurOverlayEdges, false);
+    [merged1, lastX, lastY] = mergeCellsWithTranslation(minion1, bgCells, middleX-xBuffer, middleY, middleX-4*xBuffer*xScale, middleY+yBuffer*yScale, blurOverlayEdges, false);
+    [merged2, lastX, lastY] = mergeCellsWithTranslation(minion2, merged1, middleX+xBuffer, middleY, middleX+3*xBuffer*xScale, middleY+yBuffer*yScale, blurOverlayEdges, false);
+    [merged3, lastX, lastY] = mergeCellsWithTranslation(minion3, merged2, middleX-xBuffer, middleY+yBuffer, middleX-4*xBuffer*xScale, middleY+3*yBuffer*yScale, blurOverlayEdges, false);
+    [merged4, lastX, lastY] = mergeCellsWithTranslation(minion4, merged3, middleX+xBuffer, middleY+yBuffer, middleX+4*xBuffer*xScale, middleY+3*yBuffer*yScale, blurOverlayEdges, false);
     [merged5, lastX, lastY] = mergeCellsWithTranslation(humanCells1, merged4, middleX-xBuffer, middleY+yBuffer, lhsEndX, lhsEndY, blurOverlayEdges, false);
     [merged6, lastX, lastY] = mergeCellsWithTranslation(humanCells2, merged5, middleX+xBuffer, middleY+yBuffer, rhsEndX, rhsEndY, blurOverlayEdges, false);
 
