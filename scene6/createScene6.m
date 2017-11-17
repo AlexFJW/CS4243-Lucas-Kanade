@@ -1,12 +1,15 @@
-% creates scene 6 in sceneVideos directory
+% creates scene 6 in sceneVideos directory. !!! important: measurements
+% are as derived by trial and error to cover antman.
 % horizontal flip human => bool,
 % format for rotation degree follows rotateCells method
 % format for child to parent: %
-function [] = createScene6(humanVideoDirectory, childToParentRatio, ...
-                        horizontalFlipHuman, rotationDegree,...
-                        xOffset, yOffset, ...
-                        startFrame, endFrame, ...
-                        outputDirectory, blurOverlayEdges)
+function [] = createScene6(humanVideoDirectory, ...
+                           childToParentRatio, ...
+                           horizontalFlipHuman, rotationDegree,...
+                           xOffset, yOffset, ...
+                           xMovement, yMovement, ...
+                           startFrame, endFrame, ...
+                           outputDirectory, blurOverlayEdges)
     % load bg video cells
     bgVid = VideoReader('videos/background/antman1.mp4');
     bgCells = videoToCells(bgVid);
@@ -61,7 +64,7 @@ function [] = createScene6(humanVideoDirectory, childToParentRatio, ...
     % 1, enlarge by ~2x
     % 3, shrink by ~3x
     resize1 = 3;
-    resize3 = 1/6;
+    resize3 = 11/60; %in between 1/5 and 1/6
 
     sizeNow = 1;
     sizeNow = sizeNow * resize1;
@@ -71,7 +74,7 @@ function [] = createScene6(humanVideoDirectory, childToParentRatio, ...
     humanPart3 = resizeImmediately(humanPart3, sizeNow);
     sizeNow = sizeNow * resize3;
     humanPart3 = resizeOverTime(humanPart3, resize3);
-
+    
     % move south-west
     lastX = 550 + xOffset; lastY = 410 + yOffset;
     nextX = 430 + xOffset; nextY = 270 + yOffset;
@@ -82,9 +85,9 @@ function [] = createScene6(humanVideoDirectory, childToParentRatio, ...
     nextY = lastY;
     [merged2, lastX, lastY] = mergeCellsWithTranslation(humanPart2, bgPart2, lastX, lastY, nextX, nextY, blurOverlayEdges, -90);
 
-    % move right a lot
-    nextX = lastX + 15;
-    nextY = lastY;
+    % move right a lot 
+    nextX = lastX + xMovement; %travel right as figure is shrinking;
+    nextY = lastY + yMovement; %travel down as figure is shrinking;
     [merged3, lastX, lastY] = mergeCellsWithTranslation(humanPart3, bgPart3, lastX, lastY, nextX, nextY, blurOverlayEdges, -90);
 
     % videoCellsToMp4(merged1, bgVid.Framerate, 'test_output/1.mp4'); % test code
