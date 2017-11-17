@@ -65,16 +65,16 @@ function [] = createScene6(humanVideoDirectory, childToParentRatio, ...
 
     sizeNow = 1;
     sizeNow = sizeNow * resize1;
-    humanPart1 = resizeOverTime(humanPart1, sizeNow);
+    humanPart1 = resizeOverTime(humanPart1, resize1);
     humanPart2 = resizeImmediately(humanPart2, sizeNow);
 
     humanPart3 = resizeImmediately(humanPart3, sizeNow);
     sizeNow = sizeNow * resize3;
-    humanPart3 = resizeOverTime(humanPart3, sizeNow);
+    humanPart3 = resizeOverTime(humanPart3, resize3);
 
     % move south-west
     lastX = 550 + xOffset; lastY = 410 + yOffset;
-    nextX = 430 + xOffset; nextY = 300 + yOffset;
+    nextX = 430 + xOffset; nextY = 270 + yOffset;
     [merged1, lastX, lastY] = mergeCellsWithTranslation(humanPart1, bgPart1, lastX, lastY, nextX, nextY, blurOverlayEdges, 110);
 
     % stationary
@@ -83,7 +83,7 @@ function [] = createScene6(humanVideoDirectory, childToParentRatio, ...
     [merged2, lastX, lastY] = mergeCellsWithTranslation(humanPart2, bgPart2, lastX, lastY, nextX, nextY, blurOverlayEdges, -90);
 
     % move right a lot
-    nextX = lastX + 80;
+    nextX = lastX + 15;
     nextY = lastY;
     [merged3, lastX, lastY] = mergeCellsWithTranslation(humanPart3, bgPart3, lastX, lastY, nextX, nextY, blurOverlayEdges, -90);
 
