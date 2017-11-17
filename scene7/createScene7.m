@@ -43,7 +43,7 @@ function [] = createScene7(humanVideoDirectory, childToParentRatio, ...
     part1End = ceil(18/totalQuicktimeFrames * totalBgFrames);
     part2End = ceil(23/totalQuicktimeFrames * totalBgFrames);
     part3End = ceil(32/totalQuicktimeFrames * totalBgFrames);
-    part4End = ceil(40/totalQuicktimeFrames * totalBgFrames);
+    part4End = ceil(38/totalQuicktimeFrames * totalBgFrames);
     part5End = ceil(67/totalQuicktimeFrames * totalBgFrames);
     part6End = ceil(80/totalQuicktimeFrames * totalBgFrames);
     part7End = ceil(110/totalQuicktimeFrames * totalBgFrames);
@@ -75,24 +75,26 @@ function [] = createScene7(humanVideoDirectory, childToParentRatio, ...
     % 5, shrink by 3x
     resize1 = 1.3;
     resize3 = 3;
-    resize5 = 1/3;
+    resize5 = 1/8;
 
     sizeNow = 1;
     sizeNow = sizeNow * resize1;
-    humanPart1 = resizeOverTime(humanPart1, sizeNow);
+    humanPart1 = resizeOverTime(humanPart1, resize1);
     humanPart2 = resizeImmediately(humanPart2, sizeNow);
 
     % always resizeImmediately to previous part's size before doing resizeOverTime
     humanPart3 = resizeImmediately(humanPart3, sizeNow);
     sizeNow = sizeNow * resize3;
-    humanPart3 = resizeOverTime(humanPart3, sizeNow);
+    humanPart3 = resizeOverTime(humanPart3, resize3);
     humanPart4 = resizeImmediately(humanPart4, sizeNow);
 
     humanPart5 = resizeImmediately(humanPart5, sizeNow);
     sizeNow = sizeNow * resize5;
-    humanPart5 = resizeOverTime(humanPart5, sizeNow);
+    humanPart5 = resizeOverTime(humanPart5, resize5);
     humanPart6 = resizeImmediately(humanPart6, sizeNow);
     humanPart7 = resizeImmediately(humanPart7, sizeNow);
+    size(humanPart5{end})
+    size(humanPart6{1})
 
     % cant test like this, since some cells dont have same sized matrices
     lastX = 270; lastY = 200;
@@ -126,15 +128,18 @@ function [] = createScene7(humanVideoDirectory, childToParentRatio, ...
     nextY = lastY + 40;
     [merged4, lastX, lastY] = mergeCellsWithTranslation(humanPart4, bgPart4, lastX, lastY, nextX, nextY, blurOverlayEdges, -90);
 
-    % move human to new point
+    % move human to left, center <-
     nextX = 450;
-    nextY = 450;
-    [merged5, lastX, lastY] = mergeCellsWithTranslation(humanPart5, bgPart5, lastX, lastY, nextX, nextY, blurOverlayEdges, NaN);
+    nextY = 500;
+    [merged5, lastX, lastY] = mergeCellsWithTranslation(humanPart5, bgPart5, lastX, lastY, nextX, nextY, blurOverlayEdges, -90);
 
     % move human -> by 10% of movie width
     nextX = lastX + floor(bgWidth/10);
     nextY = lastY;
     [merged6, lastX, lastY] = mergeCellsWithTranslation(humanPart6, bgPart6, lastX, lastY, nextX, nextY, blurOverlayEdges, NaN);
+
+    videoCellsToMp4(merged5, bgVid.Framerate, 'test_output/5.mp4'); % test code
+    videoCellsToMp4(merged6, bgVid.Framerate, 'test_output/6.mp4'); % test code
 
     % move human to center of movie
     nextX = floor(bgWidth/2);
