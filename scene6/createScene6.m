@@ -36,11 +36,9 @@ function [] = createScene6(humanVideoDirectory, ...
 
     % extend human vid
     humanCells = extendVideo(humanCells, totalBgFrames);
-
     % split human video into parts, by frames.
     % should have 3 parts
     totalQuicktimeFrames = 50;
-
     part1End = ceil(17/totalQuicktimeFrames * totalBgFrames);
     part2End = ceil(28/totalQuicktimeFrames * totalBgFrames);
 
