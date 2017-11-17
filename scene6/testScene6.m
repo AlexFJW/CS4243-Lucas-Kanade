@@ -1,4 +1,3 @@
-
 createScene6('videos/filtered/human1_3_out_100.mp4', ... %human video directory
             0.45, ... %childToParentRatio
             false, ...%horizontalFlipHuman

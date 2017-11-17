@@ -90,6 +90,7 @@ function [] = createScene6(humanVideoDirectory, ...
     nextY = lastY + yMovement; %travel down as figure is shrinking;
     [merged3, lastX, lastY] = mergeCellsWithTranslation(humanPart3, bgPart3, lastX, lastY, nextX, nextY, blurOverlayEdges, -90);
 
+   
     % videoCellsToMp4(merged1, bgVid.Framerate, 'test_output/1.mp4'); % test code
     % videoCellsToMp4(merged2, bgVid.Framerate, 'test_output/2.mp4'); % test code
     % videoCellsToMp4(merged3, bgVid.Framerate, 'test_output/3.mp4'); % test code
