@@ -101,7 +101,7 @@ function [] = createScene7(humanVideoDirectory, childToParentRatio, ...
     humanPart8 = resizeOverTime(humanPart8, resize8);
 
     % cant test like this, since some cells dont have same sized matrices
-    lastX = 270; lastY = 200;
+    lastX = 270 + xOffset; lastY = 200 + yOffset;
     nextX = 150; nextY = 185;
     % do fadein for 1st part
 
@@ -133,7 +133,7 @@ function [] = createScene7(humanVideoDirectory, childToParentRatio, ...
     [merged4, lastX, lastY] = mergeCellsWithTranslation(humanPart4, bgPart4, lastX, lastY, nextX, nextY, blurOverlayEdges, -90);
 
     % move human to left, center <-
-    nextX = 500;
+    nextX = lastX - floor(bgWidth/2);
     nextY = 400;
     [merged5, lastX, lastY] = mergeCellsWithTranslation(humanPart5, bgPart5, lastX, lastY, nextX, nextY, blurOverlayEdges, -90);
 
@@ -147,8 +147,8 @@ function [] = createScene7(humanVideoDirectory, childToParentRatio, ...
     nextY = floor(bgHeight/2) + 100;
     [merged7, lastX, lastY] = mergeCellsWithTranslation(humanPart7, bgPart7, lastX, lastY, nextX, nextY, blurOverlayEdges, 90);
 
-    videoCellsToMp4(merged6, bgVid.Framerate, 'test_output/6.mp4'); % test code
-    videoCellsToMp4(merged7, bgVid.Framerate, 'test_output/7.mp4'); % test code
+    %videoCellsToMp4(merged6, bgVid.Framerate, 'test_output/6.mp4'); % test code
+    %videoCellsToMp4(merged7, bgVid.Framerate, 'test_output/7.mp4'); % test code
 
     % move human to the centerish & shrinkkkk
     nextX = floor(bgWidth/2);
