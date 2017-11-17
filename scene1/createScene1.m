@@ -1,4 +1,4 @@
-function [] = createScene1(humanVideoPath, outputVideoPath)
+function [] = createScene1(humanVideoPath, startFrame, endFrame, outputVideoPath)
     humanVid = VideoReader(humanVideoPath);
     humanCells = videoToCells(humanVid);
 
@@ -7,9 +7,8 @@ function [] = createScene1(humanVideoPath, outputVideoPath)
     [~, totalBgFrames] = size(bgCells);
     [bgHeight, bgWidth, ~] = size(bgCells{1});
 
-    % only take first 1/4 of video
-    [~, initialHumanFrames] = size(humanCells);
-    humanCells = humanCells(1:floor(initialHumanFrames/4));
+    % Select range of cells
+    humanCells = humanCells(1,startFrame:endFrame);
 
     % resize human cells to fraction of bg
     humanCells = resizeChild(humanCells, bgHeight, bgWidth, 0.45);
