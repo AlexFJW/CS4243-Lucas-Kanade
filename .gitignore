@@ -3,3 +3,5 @@ videos/originals/
 videos/trimmed/
 test_output/*
 .idea
+videos/results/
+ignore/
