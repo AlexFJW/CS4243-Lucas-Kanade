@@ -81,4 +81,5 @@ function [] = createScene4(humanVideoDirectory, childToParentRatio, ...
     [merged5, lastX, lastY] = mergeCellsWithTranslation(humanCells1, merged4, middleX-xBuffer, middleY+yBuffer, lhsEndX, lhsEndY, blurOverlayEdges, NaN);
     [merged6, lastX, lastY] = mergeCellsWithTranslation(humanCells2, merged5, middleX+xBuffer, middleY+yBuffer, rhsEndX, rhsEndY, blurOverlayEdges, NaN);
 
-    videoCellsToMp4(merged6, bgVid.Framerate, outputDirectory); % test code
+    mergedAll = squeezeBrightnessContrastForCells(merged6);
+    videoCellsToMp4(mergedAll, bgVid.Framerate, outputDirectory); % test code

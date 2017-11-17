@@ -42,5 +42,6 @@ function [] = createScene2(humanVideoPath, outputVideoPath)
     nextX = 0; nextY = 200;
     [merged, lastX, lastY] = mergeCellsWithTranslation(humanPart2, merged1, lastX, lastY, nextX, nextY, false, NaN);
 
+    merged = squeezeBrightnessContrastForCells(merged);
     videoCellsToMp4(merged, bgVid.Framerate, outputVideoPath); % test code
 end

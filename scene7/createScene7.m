@@ -166,7 +166,8 @@ function [] = createScene7(humanVideoDirectory, childToParentRatio, ...
 
     % append all merged together
     mergedAll = [merged1 merged2 merged3 merged4 merged5 merged6 merged7 merged8 bgPart9];
-
+    
+    mergedAll = squeezeBrightnessContrastForCells(mergedAll);
     videoCellsToMp4(mergedAll, bgVid.Framerate, outputDirectory); % test code
     % videoCellsToMp4(mergedAll, bgVid.Framerate, outputDirectory); % test code
 end
