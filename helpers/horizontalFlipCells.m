@@ -5,7 +5,7 @@
 % returns flippedCells: flipped cells
 function [flippedCells] = horizontalFlipCells(cells)
     [~, numCells] = size(cells);
-    flippedCells = cell(numCells);
+    flippedCells = cell(1,numCells);
     
     for i = 1:numCells
         flippedCells{i} = fliplr(cells{i});
