@@ -1,6 +1,5 @@
 % Function extendVideo
 % Extends video by looping & rewinding
-% TODO: add some stochasticity into playback, to make it more natural
 % can be done by duplicating frames (adding delay) & dropping frames (speedup)
 
 % params videoCells: cells containing video frames

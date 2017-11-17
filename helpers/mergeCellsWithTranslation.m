@@ -1,7 +1,6 @@
 % Function mergeCellsWithTranslation
 % Merges 2 video cells, while translating the overlay with given velocity
 % Note: overlay's center is the point of reference for the function's parameters
-% TODO: add some stochasticity to the translation for realism
 
 % params overlay: overlay cells (must have same size as background)
 % params background: background cells (same as above)
