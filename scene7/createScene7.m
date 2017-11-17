@@ -3,7 +3,10 @@
 % format for rotation degree follows rotateCells method
 % format for child to parent: %
 function [] = createScene7(humanVideoDirectory, childToParentRatio, ...
-                        horizontalFlipHuman, rotationDegree, outputDirectory, blurOverlayEdges)
+                        horizontalFlipHuman, rotationDegree, ...
+                        xOffset, yOffset, ...
+                        startFrame, endFrame, ...
+                        outputDirectory, blurOverlayEdges)
     % load bg video cells
     bgVid = VideoReader('videos/background/antman2.mp4');
     bgCells = videoToCells(bgVid);
@@ -16,7 +19,7 @@ function [] = createScene7(humanVideoDirectory, childToParentRatio, ...
 
     % only take first 1/4 of video
     [~, initialHumanFrames] = size(humanCells);
-    humanCells = humanCells(1:floor(initialHumanFrames/4));
+    humanCells = humanCells(startFrame:endFrame);
 
     % resize human cells to fraction of bg
     humanCells = resizeChild(humanCells, bgHeight, bgWidth, childToParentRatio);
@@ -33,16 +36,18 @@ function [] = createScene7(humanVideoDirectory, childToParentRatio, ...
     humanCells = extendVideo(humanCells, totalBgFrames);
 
     % split human video into parts, by frames.
-    % should have 8 parts
+    % should have 9 parts
+    % part 9 is just a black screeen
     totalQuicktimeFrames = 138;
 
-    part1End = ceil(12/totalQuicktimeFrames * totalBgFrames);
-    part2End = ceil(22/totalQuicktimeFrames * totalBgFrames);
+    part1End = ceil(18/totalQuicktimeFrames * totalBgFrames);
+    part2End = ceil(28/totalQuicktimeFrames * totalBgFrames);
     part3End = ceil(37/totalQuicktimeFrames * totalBgFrames);
-    part4End = ceil(50/totalQuicktimeFrames * totalBgFrames);
+    part4End = ceil(45/totalQuicktimeFrames * totalBgFrames);
     part5End = ceil(67/totalQuicktimeFrames * totalBgFrames);
     part6End = ceil(80/totalQuicktimeFrames * totalBgFrames);
     part7End = ceil(110/totalQuicktimeFrames * totalBgFrames);
+    part8End = ceil(131/totalQuicktimeFrames * totalBgFrames);
 
     humanPart1 = humanCells(1:part1End);
     humanPart2 = humanCells(part1End+1:part2End);
@@ -51,7 +56,8 @@ function [] = createScene7(humanVideoDirectory, childToParentRatio, ...
     humanPart5 = humanCells(part4End+1:part5End);
     humanPart6 = humanCells(part5End+1:part6End);
     humanPart7 = humanCells(part6End+1:part7End);
-    humanPart8 = humanCells(part7End+1:end);
+    humanPart8 = humanCells(part7End+1:part8End);
+    % part 9 is just a black screeen
 
     bgPart1 = bgCells(1:part1End);
     bgPart2 = bgCells(part1End+1:part2End);
@@ -60,7 +66,8 @@ function [] = createScene7(humanVideoDirectory, childToParentRatio, ...
     bgPart5 = bgCells(part4End+1:part5End);
     bgPart6 = bgCells(part5End+1:part6End);
     bgPart7 = bgCells(part6End+1:part7End);
-    bgPart8 = bgCells(part7End+1:end);
+    bgPart8 = bgCells(part7End+1:part8End);
+    bgPart9 = bgCells(part8End+1:end);
 
     % do resize operation on parts requiring it
     % 1, enlarge by 1.2x
@@ -87,18 +94,24 @@ function [] = createScene7(humanVideoDirectory, childToParentRatio, ...
     humanPart6 = resizeImmediately(humanPart6, sizeNow);
     humanPart7 = resizeImmediately(humanPart7, sizeNow);
 
-    % do fadein for 1st parts
-    % TODO: add fade back later! there might be some bug with fading
-    %humanPart1 = fadeCells(humanPart1, bgPart1, false);
-
     % cant test like this, since some cells dont have same sized matrices
-    lastX = 150; lastY = 200;
+    lastX = 270; lastY = 200;
     nextX = 150; nextY = 200;
-    [merged1, lastX, lastY] = mergeCellsWithTranslation(humanPart1, bgPart1, lastX, lastY, nextX, nextY, blurOverlayEdges, NaN);
+    % do fadein for 1st part
 
-    % move human <- by half matrix size
+    [~, numFrames_p1] = size(humanPart1);
+    zeroBg_p1 = cell(1, numFrames_p1);
+    for ii=1:numFrames_p1
+        zeroBg_p1{ii} = zeros(size(bgPart1{1}));
+    end
+    [temp1, lastX, lastY] = mergeCellsWithTranslation(humanPart1, zeroBg_p1, lastX, lastY, nextX, nextY, false, 90);
+    merged1 = fadeCellsScene7(temp1, bgPart1, false);
+    %[merged1, lastX, lastY] = mergeCellsWithTranslation(humanPart1, bgPart1, lastX, lastY, nextX, nextY, blurOverlayEdges, NaN);
+    videoCellsToMp4(merged1, bgVid.Framerate, 'test_output/1.mp4'); % test code
+
+    % move human <- by 0.3 matrix size
     [h2Height_1, h2Width_1, ~] = size(humanPart2{1});
-    nextX = lastX - floor(h2Width_1/2);
+    nextX = lastX - floor(h2Width_1 * 0.3);
     nextY = lastY;
     [merged2, lastX, lastY] = mergeCellsWithTranslation(humanPart2, bgPart2, lastX, lastY, nextX, nextY, blurOverlayEdges, NaN);
 
@@ -143,7 +156,7 @@ function [] = createScene7(humanVideoDirectory, childToParentRatio, ...
     %videoCellsToMp4(merged8, bgVid.Framerate, 'test_output/8.mp4'); % test code
 
     % append all merged together
-    mergedAll = [merged1 merged2 merged3 merged4 merged5 merged6 merged7 merged8];
+    mergedAll = [merged1 merged2 merged3 merged4 merged5 merged6 merged7 merged8 bgPart9];
 
     videoCellsToMp4(mergedAll, bgVid.Framerate, 'test_output/all.mp4'); % test code
     % videoCellsToMp4(mergedAll, bgVid.Framerate, outputDirectory); % test code

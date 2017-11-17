@@ -1,16 +1,17 @@
 % Function fadeCells
 % Fade the cells into the background
+% README: only difference from fadeCells is the threshold value.. which doesn't seeem to work.
 
 % params cells: cells with matrices to fade
 % params bgCells: background cells for cells to fade into
 % params isFadeOut: boolean, true for fade out, false for fade in
 % returns fadedCells: the faded video matrix cells
-function [ fadedCells ] = fadeCells( cells, bgCells, isFadeOut )
+function [ fadedCells ] = fadeCellsScene7( cells, bgCells, isFadeOut )
 %FADECELLS Summary of this function goes here
 %   Detailed explanation goes here
     [~, numBgCells] = size(bgCells);
     [~, numCells] = size(cells);
-    
+
     if (numBgCells < numCells)
         numCells = ngBgCells;
     end
@@ -23,10 +24,11 @@ function [ fadedCells ] = fadeCells( cells, bgCells, isFadeOut )
 
     stepRatio = 1/(numCells-1);
 
+    threshold = 50;
     for i = 1:numCells
         isPixel = sum(cells{i},3);
-        isPixel(isPixel == 0) = 0;
-        isPixel(isPixel ~= 0) = 1;
+        isPixel(isPixel < threshold) = 0;
+        isPixel(isPixel >= threshold) = 1;
         isPixel = repmat(isPixel, [1 1 3]);
 
         fadedCells{i} = uint8( ...
