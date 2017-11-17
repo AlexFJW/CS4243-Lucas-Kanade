@@ -10,8 +10,10 @@
 % params startY: y coordinate of overlay's start position (see above)
 % params destX: x coordinate of overlay's end position (see above)
 % params destY: y coordinate of overlay's end position (see above)
+% params blurOverlayEdges: use gaussian blur on overlay edges, expensive, don't use when testing
+% params emphasizeMotionBlur: emphasize motion blur when translating overlay
 function [merged, destX, destY] = mergeCellsWithTranslation(overlay, background,...
-                            startX, startY, destX, destY, useGaussian)
+                            startX, startY, destX, destY, blurOverlayEdges, emphasizeMotionBlur)
 
     [~, numOverlayFrames] = size(overlay);
     [~, numBgFrames] = size(background);
@@ -96,7 +98,7 @@ function [merged, destX, destY] = mergeCellsWithTranslation(overlay, background,
         % fill overlay's black pixels with pixels from bg
         overlayFrame(pixelsToGrab) = bgWindow(pixelsToGrab);
 
-        if (useGaussian)
+        if (blurOverlayEdges)
             % grab pixels we didn't replace, to apply gaussian blur
             % do this in 2d since blackAll_3ch is 3 layers of the same thing
             nonBlackPixels = find(blackAll_1ch == 0);

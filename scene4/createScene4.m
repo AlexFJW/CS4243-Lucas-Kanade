@@ -4,7 +4,7 @@
 % format for child to parent: %
 function [] = createScene4(humanVideoDirectory, childToParentRatio, ...
                         horizontalFlipHuman, rotationDegree, ...
-                        startFrame, endFrame, outputDirectory, useGaussian)
+                        startFrame, endFrame, outputDirectory, blurOverlayEdges)
     % load bg video cells
     bgVid = VideoReader('videos/background/supernova2.mp4');
     bgCells = videoToCells(bgVid);
@@ -14,7 +14,7 @@ function [] = createScene4(humanVideoDirectory, childToParentRatio, ...
     % convert human video to cells
     humanVid = VideoReader(humanVideoDirectory);
     humanCells = videoToCells(humanVid);
-    
+
     % Select range of cells
     humanCells = humanCells(1,startFrame:endFrame);
 
@@ -28,7 +28,7 @@ function [] = createScene4(humanVideoDirectory, childToParentRatio, ...
     if (horizontalFlipHuman)
         humanCells = horizontalFlipCells(humanCells);
     end
-    
+
     % overlay color of human in the middle frames
     start1 = 1;
     end1 = 3;
@@ -60,26 +60,26 @@ function [] = createScene4(humanVideoDirectory, childToParentRatio, ...
     rhsEndY = 200;
     lhsEndX = 200;
     lhsEndY = 300;
-    
+
     middleX = floor(width/2);
     middleY = floor(height/2);
     xBuffer = 160;
     yBuffer = 120;
-    
+
     minion1 = resizeChild(humanCells1, bgHeight, bgWidth, 0.8);
     minion1 = rotateOverTime(minion1, -45);
     minion2 = resizeChild(humanCells2, bgHeight, bgWidth, 0.8);
-    minion2 = rotateOverTime(minion2, 30); 
+    minion2 = rotateOverTime(minion2, 30);
     minion3 = resizeChild(humanCells1, bgHeight, bgWidth, 0.8);
     minion3 = rotateOverTime(minion3, -10);
     minion4 = resizeChild(humanCells2, bgHeight, bgWidth, 0.8);
     minion4 = rotateOverTime(minion4, 75);
                                                                             %startX and startY are continuation from previous scene
-    [merged1, lastX, lastY] = mergeCellsWithTranslation(minion1, bgCells, middleX-xBuffer, middleY, middleX-4*xBuffer, middleY+yBuffer, useGaussian);
-    [merged2, lastX, lastY] = mergeCellsWithTranslation(minion2, merged1, middleX+xBuffer, middleY, middleX+3*xBuffer, middleY+yBuffer, useGaussian);
-    [merged3, lastX, lastY] = mergeCellsWithTranslation(minion3, merged2, middleX-xBuffer, middleY+yBuffer, middleX-4*xBuffer, middleY+3*yBuffer, useGaussian);
-    [merged4, lastX, lastY] = mergeCellsWithTranslation(minion4, merged3, middleX+xBuffer, middleY+yBuffer, middleX+4*xBuffer, middleY+3*yBuffer, useGaussian);
-    [merged5, lastX, lastY] = mergeCellsWithTranslation(humanCells1, merged4, middleX-xBuffer, middleY+yBuffer, lhsEndX, lhsEndY, useGaussian);
-    [merged6, lastX, lastY] = mergeCellsWithTranslation(humanCells2, merged5, middleX+xBuffer, middleY+yBuffer, rhsEndX, rhsEndY, useGaussian);
-    
+    [merged1, lastX, lastY] = mergeCellsWithTranslation(minion1, bgCells, middleX-xBuffer, middleY, middleX-4*xBuffer, middleY+yBuffer, blurOverlayEdges, false);
+    [merged2, lastX, lastY] = mergeCellsWithTranslation(minion2, merged1, middleX+xBuffer, middleY, middleX+3*xBuffer, middleY+yBuffer, blurOverlayEdges, false);
+    [merged3, lastX, lastY] = mergeCellsWithTranslation(minion3, merged2, middleX-xBuffer, middleY+yBuffer, middleX-4*xBuffer, middleY+3*yBuffer, blurOverlayEdges, false);
+    [merged4, lastX, lastY] = mergeCellsWithTranslation(minion4, merged3, middleX+xBuffer, middleY+yBuffer, middleX+4*xBuffer, middleY+3*yBuffer, blurOverlayEdges, false);
+    [merged5, lastX, lastY] = mergeCellsWithTranslation(humanCells1, merged4, middleX-xBuffer, middleY+yBuffer, lhsEndX, lhsEndY, blurOverlayEdges, false);
+    [merged6, lastX, lastY] = mergeCellsWithTranslation(humanCells2, merged5, middleX+xBuffer, middleY+yBuffer, rhsEndX, rhsEndY, blurOverlayEdges, false);
+
     videoCellsToMp4(merged6, bgVid.Framerate, outputDirectory); % test code
